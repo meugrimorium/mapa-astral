@@ -141,39 +141,40 @@ body {
 <script>
 let selectedLocation = null;
 
-/* ⭐ Agora initAutocomplete é GLOBAL */
+/* ⭐ Autocomplete só ativa depois que a pessoa parar de digitar */
 window.initAutocomplete = function () {
   const input = document.getElementById("birthPlace");
+  let autocomplete = null;
+  let typingTimer = null;
 
-  const autocomplete = new google.maps.places.Autocomplete(input, {
-    types: ["(cities)"],
-    fields: ["formatted_address", "geometry"],
-  });
+  input.addEventListener("input", () => {
+    clearTimeout(typingTimer);
 
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (!place.geometry) {
-      alert("Selecione uma cidade da lista.");
-      return;
-    }
+    typingTimer = setTimeout(() => {
+      if (!autocomplete) {
+        autocomplete = new google.maps.places.Autocomplete(input, {
+          types: ["(cities)"],
+          fields: ["formatted_address", "geometry"],
+        });
 
-    selectedLocation = {
-      name: place.formatted_address,
-      lat: place.geometry.location.lat(),
-      lon: place.geometry.location.lng()
-    };
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+
+          if (!place.geometry) {
+            alert("Selecione uma cidade da lista.");
+            return;
+          }
+
+          selectedLocation = {
+            name: place.formatted_address,
+            lat: place.geometry.location.lat(),
+            lon: place.geometry.location.lng()
+          };
+        });
+      }
+    }, 1000); // ativa só após 1 segundo sem digitar
   });
 };
-
-function planetIcon(name) {
-  const map = {
-    'Sol': '☉','Lua': '☾','Mercúrio': '☿','Vênus': '♀','Marte': '♂',
-    'Júpiter': '♃','Saturno': '♄','Urano': '♅','Netuno': '♆','Plutão': '♇',
-    'Quíron': '⚷','Lilith': '⚸','Nodo Norte': '☊','Parte da Fortuna': '⊗',
-    'Vertex': 'Vx','Ascendente': 'Asc','Meio do Céu': 'MC'
-  };
-  return map[name] || '';
-}
 
 function escapeHTML(str) {
   return str
