@@ -17,14 +17,8 @@
   --grafite: #403c39;
 }
 
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Fundo da página (transparente para embed) */
 body {
   font-family: "Segoe UI", sans-serif;
   background: transparent;
@@ -35,7 +29,6 @@ body {
   height: 100vh;
 }
 
-/* Widget */
 .widget {
   width: 380px;
   background: var(--grafite);
@@ -48,7 +41,6 @@ body {
   text-align: center;
 }
 
-/* Estrelas decorativas */
 .star {
   position: absolute;
   width: 3px;
@@ -58,23 +50,19 @@ body {
   opacity: 0.8;
   animation: twinkle 3s infinite ease-in-out alternate;
 }
+
 @keyframes twinkle {
   from { opacity: 0.2; transform: scale(0.8); }
   to   { opacity: 1;   transform: scale(1.3); }
 }
 
-/* Tipografia manuscrita */
-.hand {
-  font-family: 'Pirata One', cursive;
-}
+.hand { font-family: 'Pirata One', cursive; }
 
-/* Título */
 .title {
   font-size: 28px;
   margin-bottom: 16px;
 }
 
-/* Formulário */
 .form-group {
   margin-bottom: 12px;
   text-align: left;
@@ -82,10 +70,7 @@ body {
   font-size: 13px;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 4px;
-}
+.form-group label { display: block; margin-bottom: 4px; }
 
 .form-group input {
   width: 100%;
@@ -101,7 +86,6 @@ body {
   color: rgba(232,220,194,0.6);
 }
 
-/* Botão principal */
 .btn {
   margin-top: 16px;
   display: inline-block;
@@ -115,16 +99,13 @@ body {
   border: none;
 }
 
-.btn:hover {
-  background: #7a5c7d;
-}
+.btn:hover { background: #7a5c7d; }
 </style>
 </head>
 
 <body>
 
 <div class="widget">
-  <!-- Estrelas -->
   <div class="star" style="top:10px; left:30px;"></div>
   <div class="star" style="top:40px; right:40px;"></div>
   <div class="star" style="bottom:30px; left:60px;"></div>
@@ -160,18 +141,17 @@ body {
 <script>
 let selectedLocation = null;
 
-function initAutocomplete() {
+/* ⭐ Agora initAutocomplete é GLOBAL */
+window.initAutocomplete = function () {
   const input = document.getElementById("birthPlace");
 
   const autocomplete = new google.maps.places.Autocomplete(input, {
     types: ["(cities)"],
     fields: ["formatted_address", "geometry"],
-    componentRestrictions: { country: "br" } // opcional
   });
 
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
-
     if (!place.geometry) {
       alert("Selecione uma cidade da lista.");
       return;
@@ -183,11 +163,7 @@ function initAutocomplete() {
       lon: place.geometry.location.lng()
     };
   });
-}
-
-/* -------------------------------
-   FUNÇÕES DO MAPA ASTRAL
---------------------------------*/
+};
 
 function planetIcon(name) {
   const map = {
@@ -199,32 +175,23 @@ function planetIcon(name) {
   return map[name] || '';
 }
 
-function generateTextBlock(name, birthDate, birthTime, birthPlace, points) {
-  var lines = [];
-  lines.push('Mapa Astral de ' + name);
-  lines.push('Data: ' + (birthDate || '—'));
-  lines.push('Hora: ' + (birthTime || '—'));
-  lines.push('Local: ' + birthPlace);
-  lines.push('');
-  lines.push('Corpo | Signo | Grau | Casa');
-  points.forEach(function(p) {
-    lines.push(p.name + ' | ' + p.sign + ' | ' + p.degree + ' | ' + p.house);
-  });
-  return lines.join('\n');
+function escapeHTML(str) {
+  return str
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/`/g, "&#96;")
+    .replace(/\$/g, "&#36;");
 }
 
 document.getElementById('astroForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  var name = document.getElementById('name').value || 'Sem nome';
-  var birthDate = document.getElementById('birthDate').value;
-  var birthTime = document.getElementById('birthTime').value;
-  var birthPlace = selectedLocation ? selectedLocation.name : document.getElementById('birthPlace').value;
+  const name = document.getElementById('name').value || 'Sem nome';
+  const birthDate = document.getElementById('birthDate').value;
+  const birthTime = document.getElementById('birthTime').value;
+  const birthPlace = selectedLocation ? selectedLocation.name : document.getElementById('birthPlace').value;
 
-  console.log("LAT:", selectedLocation?.lat);
-  console.log("LON:", selectedLocation?.lon);
-
-  var points = [
+  const points = [
     { name: 'Sol', sign: 'Áries', degree: '10°', house: 'Casa 1' },
     { name: 'Lua', sign: 'Touro', degree: '23°', house: 'Casa 2' },
     { name: 'Mercúrio', sign: 'Peixes', degree: '05°', house: 'Casa 12' },
@@ -244,112 +211,36 @@ document.getElementById('astroForm').addEventListener('submit', function(e) {
     { name: 'Meio do Céu', sign: 'Capricórnio', degree: '15°', house: 'MC' }
   ];
 
-  openResultWindow(name, birthDate, birthTime, birthPlace, points);
+  const textBlock = escapeHTML(
+    [
+      `Mapa Astral de ${name}`,
+      `Data: ${birthDate || '—'}`,
+      `Hora: ${birthTime || '—'}`,
+      `Local: ${birthPlace}`,
+      ``,
+      `Corpo | Signo | Grau | Casa`,
+      ...points.map(p => `${p.name} | ${p.sign} | ${p.degree} | ${p.house}`)
+    ].join("\n")
+  );
+
+  openResultWindow(name, birthDate, birthTime, birthPlace, points, textBlock);
 });
 
-function openResultWindow(name, birthDate, birthTime, birthPlace, points) {
-  var win = window.open('', '_blank');
-  if (!win) return;
+function openResultWindow(name, birthDate, birthTime, birthPlace, points, textBlock) {
+  const win = window.open('', '_blank');
 
-  var textBlock = generateTextBlock(name, birthDate, birthTime, birthPlace, points);
-
-  var html = `
-  <!DOCTYPE html>
-  <html lang="pt-BR">
-  <head>
-  <meta charset="UTF-8">
-  <title>Mapa Astral de ${name}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
-  <style>
-    :root { --roxo:#8b698e; --verde:#6c724d; --dourado:#c9a86a; --bege:#e8dcc2; --cinza:#d9d9d9; --grafite:#403c39; }
-    body{font-family:"Segoe UI",sans-serif;background:var(--grafite);color:var(--bege);padding:24px;}
-    .hand{font-family:"Pirata One",cursive;}
-    .container{max-width:900px;margin:0 auto;}
-    .title{font-size:32px;text-align:center;margin-bottom:8px;}
-    .subtitle{font-size:14px;text-align:center;opacity:0.8;margin-bottom:20px;}
-    .layout{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;}
-    .wheel{flex:1 1 260px;min-width:260px;max-width:320px;}
-    .details{flex:1 1 320px;min-width:320px;}
-    svg{width:100%;height:auto;}
-    table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
-    th,td{padding:6px 8px;border-bottom:1px solid rgba(232,220,194,0.2);text-align:left;}
-    th{font-weight:600;}
-    .icon{font-size:16px;margin-right:4px;}
-    .actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;}
-    .btn{padding:8px 14px;background:var(--roxo);color:white;border-radius:10px;font-family:"Pirata One",cursive;cursor:pointer;font-size:14px;border:none;}
-    .btn:hover{background:#7a5c7d;}
-    textarea{width:100%;height:160px;margin-top:10px;background:#2b2624;color:var(--bege);border-radius:10px;border:1px solid rgba(232,220,194,0.3);padding:10px;font-size:12px;resize:vertical;}
-  </style>
-  </head>
-  <body>
-  <div class="container">
-    <div class="title hand">Mapa Astral de ${name}</div>
-    <div class="subtitle">Data: ${birthDate || '—'} • Hora: ${birthTime || '—'} • Local: ${birthPlace}</div>
-
-    <div class="layout">
-      <div class="wheel">
-        <svg viewBox="0 0 300 300">
-          <defs>
-            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#fdf7ec;stop-opacity:0.9" />
-              <stop offset="100%" style="stop-color:#c9a86a;stop-opacity:0.4" />
-            </linearGradient>
-          </defs>
-
-          <circle cx="150" cy="150" r="140" fill="none" stroke="#e8dcc2" stroke-width="1.5"/>
-          <circle cx="150" cy="150" r="100" fill="url(#grad)" stroke="#e8dcc2" stroke-width="1"/>
-
-          ${Array.from({length:12}).map((_,i)=>{
-            const angle = i*30*Math.PI/180;
-            const x1 = 150 + 140*Math.cos(angle);
-            const y1 = 150 + 140*Math.sin(angle);
-            const x2 = 150 + 100*Math.cos(angle);
-            const y2 = 150 + 100*Math.sin(angle);
-            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#e8dcc2" stroke-width="0.8" opacity="0.7"/>`;
-          }).join("")}
-        </svg>
-      </div>
-
-      <div class="details">
-        <table>
-          <thead>
-            <tr><th>Corpo</th><th>Signo</th><th>Grau</th><th>Casa</th></tr>
-          </thead>
-          <tbody>
-            ${points.map(p=>`
-              <tr>
-                <td><span class="icon">${planetIcon(p.name)}</span>${p.name}</td>
-                <td>${p.sign}</td>
-                <td>${p.degree}</td>
-                <td>${p.house}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-
-        <div class="actions">
-          <button class="btn hand" onclick="copyToClipboard()">Copiar tudo</button>
-          <button class="btn hand" onclick="window.print()">Baixar PDF</button>
-        </div>
-
-        <textarea id="copyBlock">${textBlock.replace(/</g,"&lt;")}</textarea>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function copyToClipboard(){
-      var ta=document.getElementById("copyBlock");
-      ta.select();
-      document.execCommand("copy");
-      alert("Informações copiadas para colar no Notion.");
-    }
-  </script>
-
-  </body>
-  </html>
-  `;
+  const html =
+    "<!DOCTYPE html>" +
+    "<html lang='pt-BR'><head><meta charset='UTF-8'>" +
+    `<title>Mapa Astral de ${name}</title>` +
+    "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+    "<link href='https://fonts.googleapis.com/css2?family=Pirata+One&display=swap' rel='stylesheet'>" +
+    "<style>body{font-family:Segoe UI;background:#403c39;color:#e8dcc2;padding:24px;}textarea{width:100%;height:200px;background:#2b2624;color:#e8dcc2;border:1px solid #c9a86a;border-radius:10px;padding:10px;}</style>" +
+    "</head><body>" +
+    `<h1 style='font-family:Pirata One;'>Mapa Astral de ${name}</h1>` +
+    `<p>Data: ${birthDate || '—'} • Hora: ${birthTime || '—'} • Local: ${birthPlace}</p>` +
+    "<textarea>" + textBlock + "</textarea>" +
+    "</body></html>";
 
   win.document.open();
   win.document.write(html);
@@ -357,7 +248,6 @@ function openResultWindow(name, birthDate, birthTime, birthPlace, points) {
 }
 </script>
 
-<!-- GOOGLE MAPS API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMHiMnYO6pjaQXzzwOq7wfCuY_uPH6aC8&libraries=places&callback=initAutocomplete" async defer></script>
 
 </body>
