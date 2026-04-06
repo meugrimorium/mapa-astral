@@ -5,7 +5,16 @@
 <title>Meu Mapa Astral</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Fonte -->
 <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+
+<!-- NOVO Google Maps JS + Web Components -->
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMHiMnYO6pjaQXzzwOq7wfCuY_uPH6aC8&libraries=maps,places">
+</script>
+<script type="module"
+  src="https://unpkg.com/@googlemaps/extended-component-library@0.6">
+</script>
 
 <style>
 :root {
@@ -72,7 +81,7 @@ body {
 
 .form-group label { display: block; margin-bottom: 4px; }
 
-.form-group input {
+.form-group input, gmpx-place-autocomplete {
   width: 100%;
   padding: 8px 10px;
   border-radius: 8px;
@@ -80,10 +89,6 @@ body {
   background: #2b2624;
   color: var(--bege);
   font-size: 13px;
-}
-
-.form-group input::placeholder {
-  color: rgba(232,220,194,0.6);
 }
 
 .btn {
@@ -131,7 +136,15 @@ body {
 
     <div class="form-group">
       <label for="birthPlace">Local de nascimento</label>
-      <input id="birthPlace" name="birthPlace" type="text" placeholder="Digite a cidade...">
+
+      <!-- ⭐ NOVO AUTOCOMPLETE OFICIAL -->
+      <gmpx-place-autocomplete
+        id="autocomplete"
+        placeholder="Digite a cidade..."
+        country="br"
+        types="locality"
+      ></gmpx-place-autocomplete>
+
     </div>
 
     <button type="submit" class="btn hand">Gerar mapa astral</button>
@@ -141,40 +154,25 @@ body {
 <script>
 let selectedLocation = null;
 
-/* ⭐ Autocomplete só ativa depois que a pessoa parar de digitar */
-window.initAutocomplete = function () {
-  const input = document.getElementById("birthPlace");
-  let autocomplete = null;
-  let typingTimer = null;
+/* ⭐ NOVO EVENTO DO NOVO AUTOCOMPLETE */
+document.addEventListener("DOMContentLoaded", () => {
+  const ac = document.getElementById("autocomplete");
 
-  input.addEventListener("input", () => {
-    clearTimeout(typingTimer);
+  ac.addEventListener("gmpx-placechange", () => {
+    const place = ac.getPlace();
 
-    typingTimer = setTimeout(() => {
-      if (!autocomplete) {
-        autocomplete = new google.maps.places.Autocomplete(input, {
-          types: ["(cities)"],
-          fields: ["formatted_address", "geometry"],
-        });
+    if (!place || !place.location) {
+      alert("Selecione uma cidade válida.");
+      return;
+    }
 
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-
-          if (!place.geometry) {
-            alert("Selecione uma cidade da lista.");
-            return;
-          }
-
-          selectedLocation = {
-            name: place.formatted_address,
-            lat: place.geometry.location.lat(),
-            lon: place.geometry.location.lng()
-          };
-        });
-      }
-    }, 1000); // ativa só após 1 segundo sem digitar
+    selectedLocation = {
+      name: ac.value,
+      lat: place.location.lat(),
+      lon: place.location.lng()
+    };
   });
-};
+});
 
 function escapeHTML(str) {
   return str
@@ -190,27 +188,7 @@ document.getElementById('astroForm').addEventListener('submit', function(e) {
   const name = document.getElementById('name').value || 'Sem nome';
   const birthDate = document.getElementById('birthDate').value;
   const birthTime = document.getElementById('birthTime').value;
-  const birthPlace = selectedLocation ? selectedLocation.name : document.getElementById('birthPlace').value;
-
-  const points = [
-    { name: 'Sol', sign: 'Áries', degree: '10°', house: 'Casa 1' },
-    { name: 'Lua', sign: 'Touro', degree: '23°', house: 'Casa 2' },
-    { name: 'Mercúrio', sign: 'Peixes', degree: '05°', house: 'Casa 12' },
-    { name: 'Vênus', sign: 'Gêmeos', degree: '18°', house: 'Casa 3' },
-    { name: 'Marte', sign: 'Leão', degree: '02°', house: 'Casa 5' },
-    { name: 'Júpiter', sign: 'Libra', degree: '27°', house: 'Casa 7' },
-    { name: 'Saturno', sign: 'Capricórnio', degree: '11°', house: 'Casa 10' },
-    { name: 'Urano', sign: 'Aquário', degree: '19°', house: 'Casa 11' },
-    { name: 'Netuno', sign: 'Escorpião', degree: '03°', house: 'Casa 8' },
-    { name: 'Plutão', sign: 'Virgem', degree: '29°', house: 'Casa 6' },
-    { name: 'Quíron', sign: 'Câncer', degree: '07°', house: 'Casa 4' },
-    { name: 'Lilith', sign: 'Sagitário', degree: '15°', house: 'Casa 9' },
-    { name: 'Nodo Norte', sign: 'Touro', degree: '12°', house: 'Casa 2' },
-    { name: 'Parte da Fortuna', sign: 'Peixes', degree: '20°', house: 'Casa 12' },
-    { name: 'Vertex', sign: 'Leão', degree: '08°', house: 'Casa 5' },
-    { name: 'Ascendente', sign: 'Áries', degree: '01°', house: 'Asc' },
-    { name: 'Meio do Céu', sign: 'Capricórnio', degree: '15°', house: 'MC' }
-  ];
+  const birthPlace = selectedLocation ? selectedLocation.name : document.getElementById('autocomplete').value;
 
   const textBlock = escapeHTML(
     [
@@ -218,24 +196,15 @@ document.getElementById('astroForm').addEventListener('submit', function(e) {
       `Data: ${birthDate || '—'}`,
       `Hora: ${birthTime || '—'}`,
       `Local: ${birthPlace}`,
-      ``,
-      `Corpo | Signo | Grau | Casa`,
-      ...points.map(p => `${p.name} | ${p.sign} | ${p.degree} | ${p.house}`)
     ].join("\n")
   );
 
-  openResultWindow(name, birthDate, birthTime, birthPlace, points, textBlock);
-});
-
-function openResultWindow(name, birthDate, birthTime, birthPlace, points, textBlock) {
   const win = window.open('', '_blank');
 
   const html =
     "<!DOCTYPE html>" +
-    "<html lang='pt-BR'><head><meta charset='UTF-8'>" +
+    "<html><head><meta charset='UTF-8'>" +
     `<title>Mapa Astral de ${name}</title>` +
-    "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
-    "<link href='https://fonts.googleapis.com/css2?family=Pirata+One&display=swap' rel='stylesheet'>" +
     "<style>body{font-family:Segoe UI;background:#403c39;color:#e8dcc2;padding:24px;}textarea{width:100%;height:200px;background:#2b2624;color:#e8dcc2;border:1px solid #c9a86a;border-radius:10px;padding:10px;}</style>" +
     "</head><body>" +
     `<h1 style='font-family:Pirata One;'>Mapa Astral de ${name}</h1>` +
@@ -246,10 +215,8 @@ function openResultWindow(name, birthDate, birthTime, birthPlace, points, textBl
   win.document.open();
   win.document.write(html);
   win.document.close();
-}
+});
 </script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMHiMnYO6pjaQXzzwOq7wfCuY_uPH6aC8&libraries=places&callback=initAutocomplete" async defer></script>
 
 </body>
 </html>
