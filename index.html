@@ -233,58 +233,78 @@
 
       let selectedLocation = null;
 
-      /* -----------------------------------------
-         CARREGAR CIDADES DO BRASIL
-      ----------------------------------------- */
+/* -----------------------------------------
+   CARREGAR CIDADES DO BRASIL
+----------------------------------------- */
 
-      let cidades = [];
+let cidades = [];
 
-      async function carregarCidades() {
-        const res = await fetch("cidades-brasil.json");
-        cidades = await res.json();
-      }
+async function carregarCidades() {
+  const res = await fetch("cidades-brasil.json");
+  cidades = await res.json();
+  console.log("Cidades carregadas:", cidades.length);
+}
 
-      carregarCidades();
+/* -----------------------------------------
+   INICIALIZAÇÃO — GARANTE QUE O JSON CARREGOU
+----------------------------------------- */
 
-      /* -----------------------------------------
-         AUTOCOMPLETE LOCAL
-      ----------------------------------------- */
+async function init() {
+  await carregarCidades(); // <-- AGORA ESPERA CARREGAR
+  ativarAutocomplete();    // <-- SÓ ATIVA DEPOIS DO JSON PRONTO
+}
 
-      const inputCidade = document.getElementById("cidade");
-      const lista = document.getElementById("lista-cidades");
+init();
 
-      inputCidade.addEventListener("input", () => {
-        const termo = inputCidade.value.toLowerCase();
-        lista.innerHTML = "";
+/* -----------------------------------------
+   AUTOCOMPLETE LOCAL
+----------------------------------------- */
 
-        if (termo.length < 2) {
-          lista.style.display = "none";
-          return;
-        }
+function ativarAutocomplete() {
+  const inputCidade = document.getElementById("cidade");
+  const lista = document.getElementById("lista-cidades");
 
-        const filtradas = cidades
-          .filter(c => c.nome.toLowerCase().includes(termo))
-          .slice(0, 12);
+  inputCidade.addEventListener("input", () => {
+    const termo = inputCidade.value.toLowerCase();
+    lista.innerHTML = "";
 
-        filtradas.forEach(c => {
-          const item = document.createElement("div");
-          item.className = "autocomplete-item";
-          item.textContent = c.nome;
-          item.onclick = () => {
-            inputCidade.value = c.nome;
-            selectedLocation = {
-              name: c.nome,
-              lat: c.lat,
-              lon: c.lon,
-              timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
-            };
-            lista.style.display = "none";
-          };
-          lista.appendChild(item);
-        });
+    if (termo.length < 2) {
+      lista.style.display = "none";
+      return;
+    }
 
-        lista.style.display = filtradas.length ? "block" : "none";
-      });
+    // Se por algum motivo o JSON ainda não carregou
+    if (cidades.length === 0) {
+      console.warn("Cidades ainda não carregadas");
+      return;
+    }
+
+    const filtradas = cidades
+      .filter(c => c.nome.toLowerCase().includes(termo))
+      .slice(0, 12);
+
+    filtradas.forEach(c => {
+      const item = document.createElement("div");
+      item.className = "autocomplete-item";
+      item.textContent = c.nome;
+
+      item.onclick = () => {
+        inputCidade.value = c.nome;
+        selectedLocation = {
+          name: c.nome,
+          lat: c.lat,
+          lon: c.lon,
+          timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+        lista.style.display = "none";
+      };
+
+      lista.appendChild(item);
+    });
+
+    lista.style.display = filtradas.length ? "block" : "none";
+  });
+}
 
       /* -----------------------------------------
          HELPERS
