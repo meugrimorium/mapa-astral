@@ -158,6 +158,19 @@
       cursor: pointer;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
     }
+    table {
+  color: var(--bege);
+  font-size: 13px;
+}
+
+table td, table th {
+  border: 1px solid rgba(201, 168, 106, 0.3);
+  text-align: left;
+}
+
+table tr:nth-child(even) {
+  background: rgba(34, 28, 27, 0.5);
+}
   </style>
 </head>
 
@@ -236,16 +249,74 @@
 /* -----------------------------------------
    CARREGAR CIDADES DO BRASIL
 ----------------------------------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  init();
-});
+document.addEventListener("DOMContentLoaded", async () => {
+  await carregarCidades();  // Carrega o JSON
+  ativarAutocomplete();     // Ativa o autocomplete
+        /* -----------------------------------------
+         SUBMISSÃO DO FORMULÁRIO
+      ----------------------------------------- */
 
+      document.getElementById("astroForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value || "Sem nome";
+        const dateStr = document.getElementById("birthDate").value;
+        const timeStr = document.getElementById("birthTime").value;
+
+        if (!selectedLocation) {
+          alert("Selecione uma cidade válida.");
+          return;
+        }
+
+        const chart = generateChartData({
+          name,
+          dateStr,
+          timeStr,
+          location: selectedLocation
+        });
+
+        document.getElementById("result-title").textContent = `Mapa Astral de ${name}`;
+        document.getElementById("result-meta").textContent =
+          `${dateStr} • ${timeStr} • ${selectedLocation.name}`;
+
+        renderChartSVG(chart);
+        renderTable(chart);
+        renderSummary(chart);
+
+        showResult();
+      });
+
+      /* -----------------------------------------
+         BOTÃO VOLTAR
+      ----------------------------------------- */
+
+      document.getElementById("btn-back").addEventListener("click", showForm);
+
+      /* -----------------------------------------
+         COPIAR TEXTO
+      ----------------------------------------- */
+
+      document.getElementById("btn-copy").addEventListener("click", () => {
+        const text = document.getElementById("mono-block").textContent;
+        navigator.clipboard.writeText(text);
+        alert("Texto copiado!");
+      });
+
+      /* -----------------------------------------
+         PDF (PRINT)
+      ----------------------------------------- */
+
+      document.getElementById("btn-pdf").addEventListener("click", () => {
+        window.print();
+      });
+    </script>
+});
+      
 let cidades = [];
 
 async function carregarCidades() {
   const res = await fetch("cidades-brasil.json");
   cidades = await res.json();
-  console.log("Cidades carregadas:", cidades.length);
 }
 
 /* -----------------------------------------
@@ -670,64 +741,6 @@ function ativarAutocomplete() {
         }, 350);
       }
 
-      /* -----------------------------------------
-         SUBMISSÃO DO FORMULÁRIO
-      ----------------------------------------- */
-
-      document.getElementById("astroForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const name = document.getElementById("name").value || "Sem nome";
-        const dateStr = document.getElementById("birthDate").value;
-        const timeStr = document.getElementById("birthTime").value;
-
-        if (!selectedLocation) {
-          alert("Selecione uma cidade válida.");
-          return;
-        }
-
-        const chart = generateChartData({
-          name,
-          dateStr,
-          timeStr,
-          location: selectedLocation
-        });
-
-        document.getElementById("result-title").textContent = `Mapa Astral de ${name}`;
-        document.getElementById("result-meta").textContent =
-          `${dateStr} • ${timeStr} • ${selectedLocation.name}`;
-
-        renderChartSVG(chart);
-        renderTable(chart);
-        renderSummary(chart);
-
-        showResult();
-      });
-
-      /* -----------------------------------------
-         BOTÃO VOLTAR
-      ----------------------------------------- */
-
-      document.getElementById("btn-back").addEventListener("click", showForm);
-
-      /* -----------------------------------------
-         COPIAR TEXTO
-      ----------------------------------------- */
-
-      document.getElementById("btn-copy").addEventListener("click", () => {
-        const text = document.getElementById("mono-block").textContent;
-        navigator.clipboard.writeText(text);
-        alert("Texto copiado!");
-      });
-
-      /* -----------------------------------------
-         PDF (PRINT)
-      ----------------------------------------- */
-
-      document.getElementById("btn-pdf").addEventListener("click", () => {
-        window.print();
-      });
-    </script>
     <!-- ==========================
          FIM DO SCRIPT
          ========================== -->
