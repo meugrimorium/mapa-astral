@@ -250,11 +250,15 @@ async function carregarCidades() {
 ----------------------------------------- */
 
 async function init() {
-  await carregarCidades(); // <-- AGORA ESPERA CARREGAR
-  ativarAutocomplete();    // <-- SÓ ATIVA DEPOIS DO JSON PRONTO
-}
+  const botao = document.getElementById("botao-gerar");
+  botao.disabled = true;
 
-init();
+  await carregarCidades(); // garante que o JSON está pronto
+
+  ativarAutocomplete();
+
+  botao.disabled = false;
+}
 
 /* -----------------------------------------
    AUTOCOMPLETE LOCAL
