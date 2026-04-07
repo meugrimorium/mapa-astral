@@ -204,7 +204,7 @@
 
         <div class="form-group">
           <label class="form-label">Cidade de nascimento</label>
-          <input id="cidade" class="form-input" placeholder="Digite sua cidade" autocomplete="off" />
+          <input id="cidade" class="form-input" placeholder="Digite sua cidade (apenas visual, fuso: São Paulo)" autocomplete="off" />
           <div id="lista-cidades" class="autocomplete-list"></div>
         </div>
 
@@ -228,7 +228,7 @@
       <table style="margin-bottom: 24px;">
         <thead>
           <tr style="background: rgba(201,168,106,0.15);">
-            <th>Planeta</th>
+            <th>Ponto</th>
             <th>Signo</th>
             <th>Posição</th>
             <th>Casa</th>
@@ -258,7 +258,6 @@
 
   </div>
 
-  <!-- SCRIPT PRINCIPAL -->
   <script>
     const DEG2RAD = Math.PI / 180;
     const RAD2DEG = 180 / Math.PI;
@@ -268,7 +267,7 @@
       "Libra", "Escorpião", "Sagitário", "Capricórnio", "Aquário", "Peixes"
     ];
 
-    const PLANETS = [
+    const POINTS = [
       { key: "sun", name: "Sol" },
       { key: "moon", name: "Lua" },
       { key: "mercury", name: "Mercúrio" },
@@ -278,67 +277,24 @@
       { key: "saturn", name: "Saturno" },
       { key: "uranus", name: "Urano" },
       { key: "neptune", name: "Netuno" },
-      { key: "pluto", name: "Plutão" }
+      { key: "pluto", name: "Plutão" },
+      { key: "chiron", name: "Quíron" },
+      { key: "lilith", name: "Lilith" },
+      { key: "nnode", name: "Nodo Norte" },
+      { key: "pof", name: "Parte da Fortuna" },
+      { key: "vertex", name: "Vertex" },
+      { key: "asc", name: "Ascendente" },
+      { key: "mc", name: "Meio do Céu" }
     ];
 
-    let selectedLocation = null;
-    let cidades = [];
+    let selectedLocation = {
+      name: "São Paulo (fuso padrão)",
+      lat: -23.5505,
+      lon: -46.6333,
+      timezoneId: "America/Sao_Paulo"
+    };
 
     const DateTime = luxon.DateTime;
-
-    async function carregarCidades() {
-      try {
-        const res = await fetch("cidades-brasil.json");
-        cidades = await res.json();
-      } catch (e) {
-        console.error("Erro ao carregar cidades-brasil.json", e);
-      }
-    }
-
-    function ativarAutocomplete() {
-      const inputCidade = document.getElementById("cidade");
-      const lista = document.getElementById("lista-cidades");
-
-      inputCidade.addEventListener("input", () => {
-        const termo = inputCidade.value.toLowerCase();
-        lista.innerHTML = "";
-
-        if (termo.length < 2) {
-          lista.style.display = "none";
-          return;
-        }
-
-        if (cidades.length === 0) {
-          console.warn("Cidades ainda não carregadas");
-          return;
-        }
-
-        const filtradas = cidades
-          .filter(c => c.nome.toLowerCase().includes(termo))
-          .slice(0, 12);
-
-        filtradas.forEach(c => {
-          const item = document.createElement("div");
-          item.className = "autocomplete-item";
-          item.textContent = c.nome;
-
-          item.addEventListener("mousedown", () => {
-            inputCidade.value = c.nome;
-            selectedLocation = {
-              name: c.nome,
-              lat: c.lat,
-              lon: c.lon,
-              timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
-            };
-            lista.style.display = "none";
-          });
-
-          lista.appendChild(item);
-        });
-
-        lista.style.display = filtradas.length ? "block" : "none";
-      });
-    }
 
     function pad2(n) {
       return n < 10 ? "0" + n : "" + n;
@@ -404,9 +360,10 @@
       return ((lst % 360) + 360) % 360;
     }
 
-    function approximatePlanetLongitude(jd, planetKey) {
+    // POSIÇÕES APROXIMADAS DOS CORPOS
+    function approximateLongitude(jd, key) {
       const d = jd - 2451545.0;
-      switch (planetKey) {
+      switch (key) {
         case "sun":     return ((280.460 + 0.9856474 * d) % 360 + 360) % 360;
         case "moon":    return ((218.316 + 13.176396 * d) % 360 + 360) % 360;
         case "mercury": return ((60.0   + 4.09233445 * d) % 360 + 360) % 360;
@@ -417,7 +374,14 @@
         case "uranus":  return ((210.0  + 0.01172834 * d) % 360 + 360) % 360;
         case "neptune": return ((240.0  + 0.00598103 * d) % 360 + 360) % 360;
         case "pluto":   return ((270.0  + 0.003964 * d) % 360 + 360) % 360;
+        // Quíron (aprox. órbita ~50 anos)
+        case "chiron":  return ((200.0  + 0.071429 * d) % 360 + 360) % 360;
+        // Lilith (Lua Negra média, aprox.)
+        case "lilith":  return ((120.0  + 0.111404 * d) % 360 + 360) % 360;
+        // Nodo Norte médio (regressivo)
+        case "nnode":   return ((125.0  - 0.05295 * d) % 360 + 360) % 360;
       }
+      return 0;
     }
 
     function calcAscendant(jd, latDeg, lonDeg) {
@@ -438,22 +402,22 @@
       return asc;
     }
 
-    function calcPlacidusHouses(jd, latDeg, lonDeg) {
-      const asc = calcAscendant(jd, latDeg, lonDeg);
+    function calcMC(jd, lonDeg) {
+      const lst = localSiderealTime(jd, lonDeg);
       const eps = 23.4393 * DEG2RAD;
-      const lstRad = localSiderealTime(jd, lonDeg) * DEG2RAD;
-      const mc = Math.atan(Math.tan(lstRad) / Math.cos(eps)) * RAD2DEG;
+      const lstRad = lst * DEG2RAD;
+      let mc = Math.atan(Math.tan(lstRad) / Math.cos(eps)) * RAD2DEG;
+      if (mc < 0) mc += 180;
+      mc = ((mc % 360) + 360) % 360;
+      return mc;
+    }
 
+    function calcEqualHouses(asc) {
       const houses = new Array(12).fill(0);
-      houses[0] = asc;
-      houses[9] = ((mc % 360) + 360) % 360;
-
-      for (let i = 1; i < 12; i++) {
-        if (i === 9) continue;
+      for (let i = 0; i < 12; i++) {
         houses[i] = ((asc + i * 30) % 360 + 360) % 360;
       }
-
-      return { asc, mc: houses[9], houses };
+      return houses;
     }
 
     function findHouseForDegree(deg, houses) {
@@ -472,6 +436,30 @@
       return 1;
     }
 
+    function isDayChart(sunLon, ascLon) {
+      // Aproximação: se Sol está acima do horizonte (entre casas 7 e 12)
+      const diff = ((sunLon - ascLon) % 360 + 360) % 360;
+      return diff > 180; // bem grosseiro, mas simbólico
+    }
+
+    function calcPartOfFortune(sunLon, moonLon, ascLon) {
+      const day = isDayChart(sunLon, ascLon);
+      let pof;
+      if (day) {
+        pof = ascLon + moonLon - sunLon;
+      } else {
+        pof = ascLon - moonLon + sunLon;
+      }
+      return ((pof % 360) + 360) % 360;
+    }
+
+    function calcVertex(jd, latDeg, lonDeg) {
+      // Aproximação: Vertex como ponto oposto ao anti-vertex, usando MC e latitude
+      const mc = calcMC(jd, lonDeg);
+      let vertex = mc + 90;
+      return ((vertex % 360) + 360) % 360;
+    }
+
     function generateChartData(formData) {
       const { name, dateStr, timeStr, location } = formData;
 
@@ -488,21 +476,49 @@
       const lat = location.lat;
       const lon = location.lon;
 
-      const { asc, mc, houses } = calcPlacidusHouses(jd, lat, lon);
+      const asc = calcAscendant(jd, lat, lon);
+      const mc = calcMC(jd, lon);
+      const houses = calcEqualHouses(asc);
 
-      const planetsData = PLANETS.map(p => {
-        const lonEcl = approximatePlanetLongitude(jd, p.key);
+      const sunLon = approximateLongitude(jd, "sun");
+      const moonLon = approximateLongitude(jd, "moon");
+      const nnodeLon = approximateLongitude(jd, "nnode");
+      const pofLon = calcPartOfFortune(sunLon, moonLon, asc);
+      const vertexLon = calcVertex(jd, lat, lon);
+
+      const pointsData = [];
+
+      POINTS.forEach(p => {
+        let lonEcl = 0;
+        let house = null;
+
+        if (["sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","chiron","lilith","nnode"].includes(p.key)) {
+          lonEcl = approximateLongitude(jd, p.key);
+          house = findHouseForDegree(lonEcl, houses);
+        } else if (p.key === "pof") {
+          lonEcl = pofLon;
+          house = findHouseForDegree(lonEcl, houses);
+        } else if (p.key === "vertex") {
+          lonEcl = vertexLon;
+          house = findHouseForDegree(lonEcl, houses);
+        } else if (p.key === "asc") {
+          lonEcl = asc;
+          house = 1;
+        } else if (p.key === "mc") {
+          lonEcl = mc;
+          house = 10;
+        }
+
         const degInfo = formatDegree(lonEcl);
-        const house = findHouseForDegree(lonEcl, houses);
 
-        return {
+        pointsData.push({
           key: p.key,
           name: p.name,
           lon: lonEcl,
           sign: degInfo.sign,
           degText: degInfo.text,
           house
-        };
+        });
       });
 
       return {
@@ -519,7 +535,7 @@
         ascInfo: formatDegree(asc),
         mcInfo: formatDegree(mc),
         houses,
-        planetsData
+        pointsData
       };
     }
 
@@ -568,42 +584,44 @@
         svg.appendChild(line);
       }
 
-      chart.planetsData.forEach(p => {
-        const angle = (p.lon - 90) * DEG2RAD;
-        const r = (innerR + outerR) / 2;
-        const x = cx + Math.cos(angle) * r;
-        const y = cy + Math.sin(angle) * r;
+      chart.pointsData
+        .filter(p => ["Sol","Lua","Mercúrio","Vênus","Marte","Júpiter","Saturno","Urano","Netuno","Plutão"].includes(p.name))
+        .forEach(p => {
+          const angle = (p.lon - 90) * DEG2RAD;
+          const r = (innerR + outerR) / 2;
+          const x = cx + Math.cos(angle) * r;
+          const y = cy + Math.sin(angle) * r;
 
-        const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        dot.setAttribute("cx", x);
-        dot.setAttribute("cy", y);
-        dot.setAttribute("r", 6);
-        dot.setAttribute("fill", "var(--dourado)");
-        dot.setAttribute("stroke", "#000");
-        dot.setAttribute("stroke-width", "1.5");
-        svg.appendChild(dot);
+          const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          dot.setAttribute("cx", x);
+          dot.setAttribute("cy", y);
+          dot.setAttribute("r", 6);
+          dot.setAttribute("fill", "var(--dourado)");
+          dot.setAttribute("stroke", "#000");
+          dot.setAttribute("stroke-width", "1.5");
+          svg.appendChild(dot);
 
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", x + 10);
-        label.setAttribute("y", y + 4);
-        label.setAttribute("fill", "var(--bege)");
-        label.setAttribute("font-size", "11");
-        label.textContent = p.name[0];
-        svg.appendChild(label);
-      });
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", x + 10);
+          label.setAttribute("y", y + 4);
+          label.setAttribute("fill", "var(--bege)");
+          label.setAttribute("font-size", "11");
+          label.textContent = p.name[0];
+          svg.appendChild(label);
+        });
     }
 
     function renderTable(chart) {
       const tbody = document.getElementById("table-body");
       tbody.innerHTML = "";
 
-      chart.planetsData.forEach(p => {
+      chart.pointsData.forEach(p => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${p.name}</td>
           <td>${p.sign}</td>
           <td>${p.degText}</td>
-          <td>${p.house}</td>
+          <td>${p.house ? p.house : "-"}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -617,7 +635,10 @@
         <p><strong>Meio do Céu:</strong> ${chart.mcInfo.text}</p>
         <p><strong>Latitude:</strong> ${chart.lat.toFixed(4)}°</p>
         <p><strong>Longitude:</strong> ${chart.lon.toFixed(4)}°</p>
-        <p><strong>Fuso horário:</strong> ${chart.tzId}</p>
+        <p><strong>Fuso horário (fixo):</strong> ${chart.tzId}</p>
+        <p style="font-size: 11px; opacity: 0.7; margin-top: 8px;">
+          Observação: cálculos aproximados, fuso fixo em São Paulo. Uso simbólico, não profissional.
+        </p>
       `;
 
       const mono = document.getElementById("mono-block");
@@ -628,8 +649,8 @@
         `Local: ${chart.locationName}\n` +
         `Ascendente: ${chart.ascInfo.text}\n` +
         `MC: ${chart.mcInfo.text}\n\n` +
-        chart.planetsData
-          .map(p => `${p.name}: ${p.degText} (Casa ${p.house})`)
+        chart.pointsData
+          .map(p => `${p.name}: ${p.degText} (Casa ${p.house || "-"})`)
           .join("\n");
     }
 
@@ -659,24 +680,17 @@
       }, 350);
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      await carregarCidades();
-      ativarAutocomplete();
-
+    document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("astroForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
         const name = document.getElementById("name").value || "Sem nome";
         const dateStr = document.getElementById("birthDate").value;
         const timeStr = document.getElementById("birthTime").value;
+        const cityStr = document.getElementById("cidade").value || selectedLocation.name;
 
         if (!dateStr || !timeStr) {
           alert("Preencha data e hora de nascimento.");
-          return;
-        }
-
-        if (!selectedLocation) {
-          alert("Selecione uma cidade válida.");
           return;
         }
 
@@ -689,7 +703,7 @@
 
         document.getElementById("result-title").textContent = `Mapa Astral de ${name}`;
         document.getElementById("result-meta").textContent =
-          `${dateStr} • ${timeStr} • ${selectedLocation.name}`;
+          `${dateStr} • ${timeStr} • ${cityStr} (fuso: São Paulo)`;
 
         renderChartSVG(chart);
         renderTable(chart);
