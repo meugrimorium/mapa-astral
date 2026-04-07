@@ -1869,7 +1869,7 @@
   { "nome": "Oriximiná, Pará", "lat": -1.7650, "lon": -55.8660 },
   { "nome": "Ourém, Pará", "lat": -1.5420, "lon": -47.1120 },
   { "nome": "Ourilândia do Norte, Pará", "lat": -6.7520, "lon": -51.0850 },
-  { "nome": "Pacajá, Pará", "lat": -3.8350, "lon": -50.6390 }
+  { "nome": "Pacajá, Pará", "lat": -3.8350, "lon": -50.6390 },
   { "nome": "Palestina do Pará, Pará", "lat": -5.7400, "lon": -48.3180 },
   { "nome": "Paragominas, Pará", "lat": -2.9960, "lon": -47.3530 },
   { "nome": "Parauapebas, Pará", "lat": -6.0670, "lon": -49.9030 },
@@ -1926,7 +1926,7 @@
   { "nome": "Vigia, Pará", "lat": -0.8610, "lon": -48.1380 },
   { "nome": "Viseu, Pará", "lat": -1.1960, "lon": -46.1390 },
   { "nome": "Vitória do Xingu, Pará", "lat": -2.8790, "lon": -52.0080 },
-  { "nome": "Xinguara, Pará", "lat": -7.0980, "lon": -49.9430 }
+  { "nome": "Xinguara, Pará", "lat": -7.0980, "lon": -49.9430 },
   { "nome": "Água Branca, Paraíba", "lat": -7.5110, "lon": -37.6350 },
   { "nome": "Aguiar, Paraíba", "lat": -7.0920, "lon": -38.1680 },
   { "nome": "Alagoa Grande, Paraíba", "lat": -7.0400, "lon": -35.6300 },
@@ -1956,7 +1956,7 @@
   { "nome": "Belém do Brejo do Cruz, Paraíba", "lat": -6.1850, "lon": -37.5360 },
   { "nome": "Bernardino Batista, Paraíba", "lat": -6.4470, "lon": -38.5520 },
   { "nome": "Boa Ventura, Paraíba", "lat": -7.4090, "lon": -38.2150 },
-  { "nome": "Boa Vista, Paraíba", "lat": -7.2630, "lon": -36.2350 }
+  { "nome": "Boa Vista, Paraíba", "lat": -7.2630, "lon": -36.2350 },
   { "nome": "Bom Jesus, Paraíba", "lat": -6.8160, "lon": -38.6450 },
   { "nome": "Bom Sucesso, Paraíba", "lat": -6.4410, "lon": -37.9230 },
   { "nome": "Bonito de Santa Fé, Paraíba", "lat": -7.3140, "lon": -38.5130 },
@@ -1984,7 +1984,7 @@
   { "nome": "Casserengue, Paraíba", "lat": -6.7800, "lon": -35.8170 },
   { "nome": "Catingueira, Paraíba", "lat": -7.1210, "lon": -37.6060 },
   { "nome": "Catolé do Rocha, Paraíba", "lat": -6.3430, "lon": -37.7470 },
-  { "nome": "Caturité, Paraíba", "lat": -7.4170, "lon": -36.0300 }
+  { "nome": "Caturité, Paraíba", "lat": -7.4170, "lon": -36.0300 },
   { "nome": "Conceição, Paraíba", "lat": -7.5520, "lon": -38.5070 },
   { "nome": "Condado, Paraíba", "lat": -6.8980, "lon": -37.6060 },
   { "nome": "Conde, Paraíba", "lat": -7.2590, "lon": -34.9070 },
@@ -2040,7 +2040,7 @@
   { "nome": "Manaíra, Paraíba", "lat": -7.7030, "lon": -38.1530 },
   { "nome": "Marcação, Paraíba", "lat": -6.7650, "lon": -35.0090 },
   { "nome": "Mari, Paraíba", "lat": -7.0590, "lon": -35.3180 },
-  { "nome": "Marizópolis, Paraíba", "lat": -6.8420, "lon": -38.3520 }
+  { "nome": "Marizópolis, Paraíba", "lat": -6.8420, "lon": -38.3520 },
   { "nome": "Massaranduba, Paraíba", "lat": -7.1890, "lon": -35.7840 },
   { "nome": "Mataraca, Paraíba", "lat": -6.5960, "lon": -35.0530 },
   { "nome": "Matinhas, Paraíba", "lat": -7.1240, "lon": -35.7660 },
@@ -2165,7 +2165,7 @@
   { "nome": "Ampére, Paraná", "lat": -25.9160, "lon": -53.4720 },
   { "nome": "Anahy, Paraná", "lat": -24.6440, "lon": -53.1330 },
   { "nome": "Andirá, Paraná", "lat": -23.0530, "lon": -50.2300 },
-  { "nome": "Ângulo, Paraná", "lat": -23.1940, "lon": -51.9150 }
+  { "nome": "Ângulo, Paraná", "lat": -23.1940, "lon": -51.9150 },
   { "nome": "Antonina, Paraná", "lat": -25.4380, "lon": -48.7190 },
   { "nome": "Antônio Olinto, Paraná", "lat": -25.9800, "lon": -50.1970 },
   { "nome": "Apucarana, Paraná", "lat": -23.5500, "lon": -51.4630 },
@@ -2190,7 +2190,7 @@
   { "nome": "Boa Esperança, Paraná", "lat": -24.2460, "lon": -52.7870 },
   { "nome": "Boa Esperança do Iguaçu, Paraná", "lat": -25.6360, "lon": -53.2100 },
   { "nome": "Boa Ventura de São Roque, Paraná", "lat": -24.8680, "lon": -51.6270 },
-  { "nome": "Boa Vista da Aparecida, Paraná", "lat": -25.4350, "lon": -53.4110 }
+  { "nome": "Boa Vista da Aparecida, Paraná", "lat": -25.4350, "lon": -53.4110 },
   { "nome": "Bocaiúva do Sul, Paraná", "lat": -25.2060, "lon": -49.1140 },
   { "nome": "Bom Jesus do Sul, Paraná", "lat": -26.1950, "lon": -53.5960 },
   { "nome": "Bom Sucesso, Paraná", "lat": -23.7080, "lon": -51.7640 },
@@ -2215,7 +2215,7 @@
   { "nome": "Campo Mourão, Paraná", "lat": -24.0460, "lon": -52.3790 },
   { "nome": "Cândido de Abreu, Paraná", "lat": -24.5660, "lon": -51.3330 },
   { "nome": "Candói, Paraná", "lat": -25.5700, "lon": -52.0500 },
-  { "nome": "Cantagalo, Paraná", "lat": -25.3730, "lon": -52.1270 }
+  { "nome": "Cantagalo, Paraná", "lat": -25.3730, "lon": -52.1270 },
   { "nome": "Capanema, Paraná", "lat": -25.6690, "lon": -53.8050 },
   { "nome": "Capitão Leônidas Marques, Paraná", "lat": -25.4800, "lon": -53.6110 },
   { "nome": "Carambeí, Paraná", "lat": -24.9500, "lon": -50.0980 },
@@ -2440,7 +2440,7 @@
   { "nome": "Primeiro de Maio, Paraná", "lat": -22.8510, "lon": -51.0290 },
   { "nome": "Prudentópolis, Paraná", "lat": -25.2130, "lon": -50.9750 },
   { "nome": "Quarto Centenário, Paraná", "lat": -24.2790, "lon": -53.0750 },
-  { "nome": "Quatiguá, Paraná", "lat": -23.5670, "lon": -49.9160 }
+  { "nome": "Quatiguá, Paraná", "lat": -23.5670, "lon": -49.9160 },
   { "nome": "Quatro Barras, Paraná", "lat": -25.3670, "lon": -49.0760 },
   { "nome": "Quatro Pontes, Paraná", "lat": -24.5750, "lon": -53.9750 },
   { "nome": "Quedas do Iguaçu, Paraná", "lat": -25.4490, "lon": -52.9100 },
@@ -2465,7 +2465,7 @@
   { "nome": "Rio Negro, Paraná", "lat": -26.1040, "lon": -49.7970 },
   { "nome": "Rolândia, Paraná", "lat": -23.3100, "lon": -51.3650 },
   { "nome": "Roncador, Paraná", "lat": -24.5960, "lon": -52.2710 },
-  { "nome": "Rondon, Paraná", "lat": -23.4120, "lon": -52.7650 }
+  { "nome": "Rondon, Paraná", "lat": -23.4120, "lon": -52.7650 },
   { "nome": "Rosário do Ivaí, Paraná", "lat": -24.2680, "lon": -51.2720 },
   { "nome": "Sabáudia, Paraná", "lat": -23.3150, "lon": -51.5550 },
   { "nome": "Salgado Filho, Paraná", "lat": -26.1770, "lon": -53.3630 },
@@ -2549,7 +2549,7 @@
   { "nome": "Virmond, Paraná", "lat": -25.3820, "lon": -52.1980 },
   { "nome": "Vitorino, Paraná", "lat": -26.2750, "lon": -52.7840 },
   { "nome": "Wenceslau Braz, Paraná", "lat": -23.8740, "lon": -49.8030 },
-  { "nome": "Xambrê, Paraná", "lat": -23.7360, "lon": -53.4880 }
+  { "nome": "Xambrê, Paraná", "lat": -23.7360, "lon": -53.4880 },
   { "nome": "Abdon Batista, Santa Catarina", "lat": -27.6120, "lon": -51.0230 },
   { "nome": "Abelardo Luz, Santa Catarina", "lat": -26.5710, "lon": -52.3220 },
   { "nome": "Agrolândia, Santa Catarina", "lat": -27.4080, "lon": -49.8220 },
@@ -2574,7 +2574,7 @@
   { "nome": "Arvoredo, Santa Catarina", "lat": -27.0740, "lon": -52.4540 },
   { "nome": "Ascurra, Santa Catarina", "lat": -26.9540, "lon": -49.3780 },
   { "nome": "Atalanta, Santa Catarina", "lat": -27.4210, "lon": -49.7780 },
-  { "nome": "Aurora, Santa Catarina", "lat": -27.3090, "lon": -49.6350 }
+  { "nome": "Aurora, Santa Catarina", "lat": -27.3090, "lon": -49.6350 },
   { "nome": "Balneário Arroio do Silva, Santa Catarina", "lat": -28.9800, "lon": -49.4230 },
   { "nome": "Balneário Barra do Sul, Santa Catarina", "lat": -26.4600, "lon": -48.6110 },
   { "nome": "Balneário Camboriú, Santa Catarina", "lat": -26.9920, "lon": -48.6350 },
@@ -2599,7 +2599,7 @@
   { "nome": "Braço do Norte, Santa Catarina", "lat": -28.2750, "lon": -49.1650 },
   { "nome": "Braço do Trombudo, Santa Catarina", "lat": -27.3580, "lon": -49.8820 },
   { "nome": "Brunópolis, Santa Catarina", "lat": -27.3050, "lon": -50.8680 },
-  { "nome": "Brusque, Santa Catarina", "lat": -27.0970, "lon": -48.9100 }
+  { "nome": "Brusque, Santa Catarina", "lat": -27.0970, "lon": -48.9100 },
   { "nome": "Caçador, Santa Catarina", "lat": -26.7750, "lon": -51.0150 },
   { "nome": "Caibi, Santa Catarina", "lat": -27.0740, "lon": -53.2450 },
   { "nome": "Calmon, Santa Catarina", "lat": -26.5940, "lon": -51.0950 },
@@ -2624,7 +2624,7 @@
   { "nome": "Cordilheira Alta, Santa Catarina", "lat": -26.9840, "lon": -52.6050 },
   { "nome": "Coronel Freitas, Santa Catarina", "lat": -26.9050, "lon": -52.7010 },
   { "nome": "Coronel Martins, Santa Catarina", "lat": -26.5110, "lon": -52.6690 },
-  { "nome": "Correia Pinto, Santa Catarina", "lat": -27.5870, "lon": -50.3610 }
+  { "nome": "Correia Pinto, Santa Catarina", "lat": -27.5870, "lon": -50.3610 },
   { "nome": "Corupá, Santa Catarina", "lat": -26.4240, "lon": -49.2460 },
   { "nome": "Criciúma, Santa Catarina", "lat": -28.6770, "lon": -49.3690 },
   { "nome": "Cunha Porã, Santa Catarina", "lat": -26.8950, "lon": -53.1660 },
@@ -2722,7 +2722,7 @@
   { "nome": "Morro Grande, Santa Catarina", "lat": -28.8010, "lon": -49.7210 },
   { "nome": "Navegantes, Santa Catarina", "lat": -26.8940, "lon": -48.6540 },
   { "nome": "Nova Erechim, Santa Catarina", "lat": -26.8980, "lon": -52.9060 },
-  { "nome": "Nova Itaberaba, Santa Catarina", "lat": -26.9430, "lon": -52.8140 }
+  { "nome": "Nova Itaberaba, Santa Catarina", "lat": -26.9430, "lon": -52.8140 },
   { "nome": "Nova Trento, Santa Catarina", "lat": -27.2850, "lon": -48.9290 },
   { "nome": "Nova Veneza, Santa Catarina", "lat": -28.6330, "lon": -49.5050 },
   { "nome": "Novo Horizonte, Santa Catarina", "lat": -26.4440, "lon": -52.8280 },
@@ -2746,7 +2746,7 @@
   { "nome": "Peritiba, Santa Catarina", "lat": -27.3750, "lon": -51.9010 },
   { "nome": "Pescaria Brava, Santa Catarina", "lat": -28.3960, "lon": -48.8860 },
   { "nome": "Petrolândia, Santa Catarina", "lat": -27.5340, "lon": -49.6940 },
-  { "nome": "Piçarras, Santa Catarina", "lat": -26.7630, "lon": -48.6710 }
+  { "nome": "Piçarras, Santa Catarina", "lat": -26.7630, "lon": -48.6710 },
   { "nome": "Pinhalzinho, Santa Catarina", "lat": -26.8490, "lon": -52.9910 },
   { "nome": "Pinheiro Preto, Santa Catarina", "lat": -27.0480, "lon": -51.2270 },
   { "nome": "Piratuba, Santa Catarina", "lat": -27.4230, "lon": -51.7700 },
@@ -2841,7 +2841,7 @@
   { "nome": "Vidal Ramos, Santa Catarina", "lat": -27.3880, "lon": -49.3590 },
   { "nome": "Videira, Santa Catarina", "lat": -27.0080, "lon": -51.1540 },
   { "nome": "Vitor Meireles, Santa Catarina", "lat": -26.8780, "lon": -49.8320 },
-  { "nome": "Witmarsum, Santa Catarina", "lat": -26.9270, "lon": -49.7940 }
+  { "nome": "Witmarsum, Santa Catarina", "lat": -26.9270, "lon": -49.7940 },
   { "nome": "Xanxerê, Santa Catarina", "lat": -26.8760, "lon": -52.4040 },
   { "nome": "Xavantina, Santa Catarina", "lat": -27.0660, "lon": -52.3430 },
   { "nome": "Xaxim, Santa Catarina", "lat": -26.9590, "lon": -52.5370 },
@@ -2865,7 +2865,7 @@
   { "nome": "Antônio Prado, Rio Grande do Sul", "lat": -28.8560, "lon": -51.2780 },
   { "nome": "Arambaré, Rio Grande do Sul", "lat": -30.9090, "lon": -51.5040 },
   { "nome": "Araricá, Rio Grande do Sul", "lat": -29.6160, "lon": -50.9290 },
-  { "nome": "Aratiba, Rio Grande do Sul", "lat": -27.3970, "lon": -52.2970 }
+  { "nome": "Aratiba, Rio Grande do Sul", "lat": -27.3970, "lon": -52.2970 },
   { "nome": "Arroio do Meio, Rio Grande do Sul", "lat": -29.4010, "lon": -51.9550 },
   { "nome": "Arroio do Padre, Rio Grande do Sul", "lat": -31.4380, "lon": -52.4240 },
   { "nome": "Arroio do Sal, Rio Grande do Sul", "lat": -29.5430, "lon": -49.8890 },
@@ -2913,7 +2913,7 @@
   { "nome": "Caiçara, Rio Grande do Sul", "lat": -27.2790, "lon": -53.4250 },
   { "nome": "Camaquã, Rio Grande do Sul", "lat": -30.8480, "lon": -51.8040 },
   { "nome": "Camargo, Rio Grande do Sul", "lat": -28.5880, "lon": -52.2000 },
-  { "nome": "Cambará do Sul, Rio Grande do Sul", "lat": -29.0470, "lon": -50.1460 }
+  { "nome": "Cambará do Sul, Rio Grande do Sul", "lat": -29.0470, "lon": -50.1460 },
   { "nome": "Campestre da Serra, Rio Grande do Sul", "lat": -28.7920, "lon": -51.0940 },
   { "nome": "Campina das Missões, Rio Grande do Sul", "lat": -27.9880, "lon": -54.8410 },
   { "nome": "Campinas do Sul, Rio Grande do Sul", "lat": -27.7170, "lon": -52.6240 },
@@ -2937,5 +2937,5 @@
   { "nome": "Caraá, Rio Grande do Sul", "lat": -29.7860, "lon": -50.4310 },
   { "nome": "Carazinho, Rio Grande do Sul", "lat": -28.2830, "lon": -52.7860 },
   { "nome": "Carlos Barbosa, Rio Grande do Sul", "lat": -29.2970, "lon": -51.5030 },
-  { "nome": "Carlos Gomes, Rio Grande do Sul", "lat": -27.7160, "lon": -51.9120 }
+  { "nome": "Carlos Gomes, Rio Grande do Sul", "lat": -27.7160, "lon": -51.9120 },
 ]
