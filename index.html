@@ -251,16 +251,6 @@ async function carregarCidades() {
 /* -----------------------------------------
    INICIALIZAÇÃO — GARANTE QUE O JSON CARREGOU
 ----------------------------------------- */
-async function carregarCidades() {
-  const res = await fetch("cidades-brasil.json");
-  cidades = await res.json();
-  console.log("Cidades carregadas:", cidades.length);
-}
-carregarCidades();
-
-async function init() {
-  const botao = document.getElementById("botao-gerar");
-  botao.disabled = true;
 
   await carregarCidades(); // garante que o JSON está pronto
 
@@ -275,7 +265,7 @@ async function init() {
 
 function ativarAutocomplete() {
   const inputCidade = document.getElementById("cidade");
-  const lista = document.getElementById("cidades-brasil.json");
+  const lista = document.getElementById("lista-cidades");
 
   inputCidade.addEventListener("input", () => {
     const termo = inputCidade.value.toLowerCase();
