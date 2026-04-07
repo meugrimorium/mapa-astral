@@ -1,143 +1,207 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu Mapa Astral ✨</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Mapa Astral ✨</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<style>
-/* (SEU CSS ORIGINAL — NÃO ALTEREI NADA RELEVANTE) */
-:root {
---primary:#8b698e;--secondary:#6c724d;--accent:#c9a86a;
---light:#e8dcc2;--bege:#d9d9d9;--dark:#403c39;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--bege);}
-.container{max-width:1200px;margin:0 auto;padding:20px;}
-.header{text-align:center;margin-bottom:40px;}
-.header h1{font-family:'Pirata One';font-size:4rem;color:var(--accent);}
-.form-section{background:#403c39;padding:30px;border-radius:20px;}
-.form-grid{display:grid;gap:20px;}
-.input-group input,.input-group select{
-width:100%;padding:15px;border-radius:10px;border:none;
-}
-.calculate-btn{margin-top:20px;padding:15px;width:100%;cursor:pointer;}
-.resultados{margin-top:40px;}
-.card{background:#555;padding:15px;margin-bottom:10px;border-radius:10px;}
-</style>
+    <style>
+        :root {
+            --primary: #8b698e;
+            --secondary: #6c724d;
+            --accent: #c9a86a;
+            --light: #e8dcc2;
+            --bege: #d9d9d9;
+            --dark: #403c39;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--bege);
+        }
+
+        .container {
+            max-width:1200px;
+            margin:0 auto;
+            padding:20px;
+        }
+
+        .header {
+            text-align:center;
+            margin-bottom:40px;
+        }
+
+        .header h1 {
+            font-family:'Pirata One', cursive;
+            font-size:3rem;
+            color:var(--accent);
+        }
+
+        .form-section {
+            background: rgba(64,60,57,0.95);
+            padding:30px;
+            border-radius:20px;
+        }
+
+        .form-grid {
+            display:grid;
+            gap:20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width:100%;
+            padding:15px;
+            border-radius:15px;
+            border:none;
+        }
+
+        .calculate-btn {
+            margin-top:20px;
+            padding:15px;
+            width:100%;
+            cursor:pointer;
+        }
+
+        /* autocomplete */
+        #lista-cidades {
+            position:absolute;
+            width:100%;
+            background:#403c39;
+            max-height:200px;
+            overflow-y:auto;
+            border-radius:10px;
+            z-index:999;
+        }
+
+        #lista-cidades div {
+            padding:10px;
+            cursor:pointer;
+        }
+
+        #lista-cidades div:hover {
+            background:rgba(201,166,106,0.2);
+        }
+
+        .card {
+            background:#555;
+            padding:15px;
+            margin-top:10px;
+            border-radius:10px;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
-<div class="header">
-<h1>Meu Mapa Astral</h1>
-</div>
+    <div class="header">
+        <h1>Meu Mapa Astral</h1>
+    </div>
 
-<div class="form-section">
-<div class="form-grid">
+    <div class="form-section">
+        <div class="form-grid">
 
-<input id="nome" placeholder="Nome">
-<input type="date" id="dataNascimento">
-<input type="time" id="horaNascimento">
+            <div class="input-group">
+                <input type="text" id="nome" placeholder="Nome completo">
+            </div>
 
-<select id="cidade">
-<option>Carregando cidades...</option>
-</select>
+            <div class="input-group">
+                <input type="date" id="dataNascimento">
+            </div>
 
-</div>
+            <div class="input-group">
+                <input type="time" id="horaNascimento">
+            </div>
 
-<button class="calculate-btn" onclick="calcularMapa()">Calcular</button>
-</div>
+            <div class="input-group">
+                <input type="text" id="cidade" placeholder="Digite sua cidade..." autocomplete="off">
+                <div id="lista-cidades"></div>
+            </div>
 
-<div id="resultados" class="resultados"></div>
+        </div>
+
+        <button class="calculate-btn" onclick="calcularMapa()">✨ Calcular Mapa Astral</button>
+    </div>
+
+    <div id="resultados"></div>
 </div>
 
 <script>
 
-// 🔑 COLOQUE SUA API KEY AQUI
-const API_KEY = "SUA_API_KEY_AQUI";
+let cidades = [];
 
-
-// 🌎 CARREGAR CIDADES
+// carregar cidades
 async function carregarCidades() {
-const res = await fetch('./cidades-brasil.json');
-const cidades = await res.json();
-
-const select = document.getElementById('cidade');
-select.innerHTML = '<option value="">Selecione...</option>';
-
-cidades.sort((a,b)=>a.nome.localeCompare(b.nome));
-
-cidades.forEach(c => {
-const opt = document.createElement('option');
-opt.value = JSON.stringify(c);
-opt.textContent = c.nome;
-select.appendChild(opt);
-});
+    const res = await fetch('./cidades-brasil.json');
+    cidades = await res.json();
 }
 
+// autocomplete
+const inputCidade = document.getElementById('cidade');
+const lista = document.getElementById('lista-cidades');
 
-// 🔮 CALCULAR MAPA REAL
-async function calcularMapa() {
+inputCidade.addEventListener('input', () => {
+    const valor = inputCidade.value.toLowerCase();
+    lista.innerHTML = '';
 
-const nome = document.getElementById('nome').value;
-const data = document.getElementById('dataNascimento').value;
-const hora = document.getElementById('horaNascimento').value;
-const cidadeRaw = document.getElementById('cidade').value;
+    if (!valor) return;
 
-if(!nome || !data || !hora || !cidadeRaw){
-alert("Preencha tudo");
-return;
-}
+    const filtradas = cidades
+        .filter(c => c.nome.toLowerCase().includes(valor))
+        .slice(0, 20);
 
-const cidade = JSON.parse(cidadeRaw);
+    filtradas.forEach(c => {
+        const div = document.createElement('div');
+        div.textContent = c.nome;
 
-// separar data
-const [ano,mes,dia] = data.split("-");
-const [horaN,min] = hora.split(":");
+        div.onclick = () => {
+            inputCidade.value = c.nome;
+            inputCidade.dataset.lat = c.lat;
+            inputCidade.dataset.lon = c.lon;
+            lista.innerHTML = '';
+        };
 
-// CHAMADA REAL DA API
-const res = await fetch(`https://api.api-ninjas.com/v1/astrology?year=${ano}&month=${mes}&day=${dia}&hour=${horaN}&min=${min}&lat=${cidade.lat}&lon=${cidade.lon}`,{
-headers: { 'X-Api-Key': API_KEY }
+        lista.appendChild(div);
+    });
 });
 
-const dados = await res.json();
+// cálculo (mantido simples por enquanto)
+function calcularMapa() {
+    const nome = document.getElementById('nome').value;
+    const data = document.getElementById('dataNascimento').value;
+    const hora = document.getElementById('horaNascimento').value;
 
-mostrarResultados(dados);
+    const lat = inputCidade.dataset.lat;
+    const lon = inputCidade.dataset.lon;
+
+    if (!nome || !data || !hora || !lat || !lon) {
+        alert("Preencha tudo e selecione uma cidade da lista!");
+        return;
+    }
+
+    const resultados = document.getElementById('resultados');
+    resultados.innerHTML = `
+        <div class="card">
+            <h3>${nome}</h3>
+            <p>${data} ${hora}</p>
+            <p>Lat: ${lat} | Lon: ${lon}</p>
+        </div>
+    `;
 }
 
-
-// 📊 MOSTRAR RESULTADOS
-function mostrarResultados(dados){
-
-const container = document.getElementById('resultados');
-container.innerHTML = '';
-
-Object.keys(dados).forEach(planeta => {
-const p = dados[planeta];
-
-const div = document.createElement('div');
-div.className = 'card';
-
-div.innerHTML = `
-<h3>${planeta}</h3>
-<p>Signo: ${p.sign}</p>
-<p>Grau: ${p.degree}</p>
-`;
-
-container.appendChild(div);
-});
-
-}
-
-
-// 🚀 INIT
+// init
 window.onload = () => {
-carregarCidades();
+    carregarCidades();
 };
 
 </script>
