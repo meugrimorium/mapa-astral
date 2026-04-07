@@ -101,7 +101,7 @@
   { "nome": "Poço das Trincheiras, Alagoas", "lat": -9.3070, "lon": -37.2880 },
   { "nome": "Porto Calvo, Alagoas", "lat": -9.0450, "lon": -35.3980 },
   { "nome": "Porto de Pedras, Alagoas", "lat": -9.1600, "lon": -35.3050 },
-  { "nome": "Porto Real do Colégio, Alagoas", "lat": -10.1840, "lon": -36.8370 }
+  { "nome": "Porto Real do Colégio, Alagoas", "lat": -10.1840, "lon": -36.8370 },
   { "nome": "Quebrangulo, Alagoas", "lat": -9.3180, "lon": -36.4710 },
   { "nome": "Rio Largo, Alagoas", "lat": -9.4780, "lon": -35.8530 },
   { "nome": "Roteiro, Alagoas", "lat": -9.8350, "lon": -35.9780 },
@@ -158,7 +158,7 @@
   { "nome": "Carauari, Amazonas", "lat": -4.8810, "lon": -66.9080 },
   { "nome": "Careiro, Amazonas", "lat": -3.7680, "lon": -60.3690 },
   { "nome": "Careiro da Várzea, Amazonas", "lat": -3.2070, "lon": -59.8260 },
-  { "nome": "Coari, Amazonas", "lat": -4.0850, "lon": -63.1410 }
+  { "nome": "Coari, Amazonas", "lat": -4.0850, "lon": -63.1410 },
   { "nome": "Codajás, Amazonas", "lat": -3.8360, "lon": -62.0650 },
   { "nome": "Eirunepé, Amazonas", "lat": -6.6560, "lon": -69.8730 },
   { "nome": "Envira, Amazonas", "lat": -7.4370, "lon": -70.0280 },
@@ -200,7 +200,7 @@
   { "nome": "Tonantins, Amazonas", "lat": -2.8730, "lon": -67.8020 },
   { "nome": "Uarini, Amazonas", "lat": -2.9960, "lon": -65.1130 },
   { "nome": "Urucará, Amazonas", "lat": -2.5360, "lon": -57.7590 },
-  { "nome": "Urucurituba, Amazonas", "lat": -3.1280, "lon": -58.1490 }
+  { "nome": "Urucurituba, Amazonas", "lat": -3.1280, "lon": -58.1490 },
   { "nome": "Alto Alegre, Roraima", "lat": 2.9880, "lon": -61.3070 },
   { "nome": "Amajari, Roraima", "lat": 3.6450, "lon": -61.3690 },
   { "nome": "Boa Vista, Roraima", "lat": 2.8235, "lon": -60.6758 },
@@ -216,7 +216,6 @@
   { "nome": "São João da Baliza, Roraima", "lat": 0.9510, "lon": -59.9120 },
   { "nome": "São Luiz, Roraima", "lat": 1.0100, "lon": -60.0410 },
   { "nome": "Uiramutã, Roraima", "lat": 4.6030, "lon": -60.1810 },
-
   { "nome": "Abaetetuba, Pará", "lat": -1.7210, "lon": -48.8780 },
   { "nome": "Abel Figueiredo, Pará", "lat": -4.9530, "lon": -48.3930 },
   { "nome": "Acará, Pará", "lat": -1.9530, "lon": -48.1980 },
@@ -261,7 +260,7 @@
   { "nome": "Curionópolis, Pará", "lat": -6.0990, "lon": -49.6060 },
   { "nome": "Curralinho, Pará", "lat": -1.8100, "lon": -49.7950 },
   { "nome": "Curuá, Pará", "lat": -1.8870, "lon": -55.1160 },
-  { "nome": "Curuçá, Pará", "lat": -0.7330, "lon": -47.8500 }
+  { "nome": "Curuçá, Pará", "lat": -0.7330, "lon": -47.8500 },
   { "nome": "Dom Eliseu, Pará", "lat": -4.2830, "lon": -47.5500 },
   { "nome": "Eldorado dos Carajás, Pará", "lat": -6.1030, "lon": -49.3550 },
   { "nome": "Faro, Pará", "lat": -2.1680, "lon": -56.7400 },
@@ -313,7 +312,7 @@
   { "nome": "Placas, Pará", "lat": -3.8680, "lon": -54.2120 },
   { "nome": "Ponta de Pedras, Pará", "lat": -1.3950, "lon": -48.8660 },
   { "nome": "Portel, Pará", "lat": -1.9360, "lon": -50.8190 },
-  { "nome": "Porto de Moz, Pará", "lat": -1.7460, "lon": -52.2360 }
+  { "nome": "Porto de Moz, Pará", "lat": -1.7460, "lon": -52.2360 },
   { "nome": "Prainha, Pará", "lat": -1.8000, "lon": -53.4800 },
   { "nome": "Primavera, Pará", "lat": -0.9450, "lon": -47.1250 },
   { "nome": "Quatipuru, Pará", "lat": -0.8990, "lon": -47.0130 },
@@ -360,7 +359,7 @@
   { "nome": "Vigia, Pará", "lat": -0.8610, "lon": -48.1380 },
   { "nome": "Viseu, Pará", "lat": -1.1960, "lon": -46.1390 },
   { "nome": "Vitória do Xingu, Pará", "lat": -2.8790, "lon": -52.0080 },
-  { "nome": "Xinguara, Pará", "lat": -7.0980, "lon": -49.9430 }
+  { "nome": "Xinguara, Pará", "lat": -7.0980, "lon": -49.9430 },
   { "nome": "Abadia de Goiás, Goiás", "lat": -16.7573, "lon": -49.4412 },
   { "nome": "Abadiânia, Goiás", "lat": -16.1970, "lon": -48.7057 },
   { "nome": "Acreúna, Goiás", "lat": -17.3960, "lon": -50.3740 },
@@ -424,7 +423,7 @@
   { "nome": "Cavalcante, Goiás", "lat": -13.7970, "lon": -47.4560 },
   { "nome": "Ceres, Goiás", "lat": -15.3080, "lon": -49.5980 },
   { "nome": "Cezarina, Goiás", "lat": -16.9710, "lon": -49.7750 },
-  { "nome": "Chapadão do Céu, Goiás", "lat": -18.4070, "lon": -52.5480 }
+  { "nome": "Chapadão do Céu, Goiás", "lat": -18.4070, "lon": -52.5480 },
   { "nome": "Cidade Ocidental, Goiás", "lat": -16.0760, "lon": -47.9250 },
   { "nome": "Cocalzinho de Goiás, Goiás", "lat": -15.7910, "lon": -48.7740 },
   { "nome": "Colinas do Sul, Goiás", "lat": -14.1520, "lon": -48.0760 },
@@ -485,8 +484,6 @@
   { "nome": "Itarumã, Goiás", "lat": -18.7640, "lon": -51.3480 },
   { "nome": "Itauçu, Goiás", "lat": -16.2020, "lon": -49.6100 },
   { "nome": "Itumbiara, Goiás", "lat": -18.4090, "lon": -49.2150 }
-  { "nome": "Cidade Ocidental, Goiás", "lat": -16.0760, "lon": -47.9250 },
-  { "nome": "Cocalzinho de Goiás, Goiás", "lat": -15.7910, "lon": -48.7740 },
   { "nome": "Colinas do Sul, Goiás", "lat": -14.1520, "lon": -48.0760 },
   { "nome": "Córrego do Ouro, Goiás", "lat": -16.2910, "lon": -50.5500 },
   { "nome": "Corumbá de Goiás, Goiás", "lat": -15.9240, "lon": -48.8110 },
@@ -544,7 +541,7 @@
   { "nome": "Itapuranga, Goiás", "lat": -15.5600, "lon": -49.9490 },
   { "nome": "Itarumã, Goiás", "lat": -18.7640, "lon": -51.3480 },
   { "nome": "Itauçu, Goiás", "lat": -16.2020, "lon": -49.6100 },
-  { "nome": "Itumbiara, Goiás", "lat": -18.4090, "lon": -49.2150 }
+  { "nome": "Itumbiara, Goiás", "lat": -18.4090, "lon": -49.2150 },
   { "nome": "Ivolândia, Goiás", "lat": -16.5990, "lon": -50.7920 },
   { "nome": "Jandaia, Goiás", "lat": -17.0480, "lon": -50.1450 },
   { "nome": "Jaraguá, Goiás", "lat": -15.7560, "lon": -49.3340 },
@@ -901,7 +898,7 @@
   { "nome": "Japorã, Mato Grosso do Sul", "lat": -23.8930, "lon": -54.4050 },
   { "nome": "Jaraguari, Mato Grosso do Sul", "lat": -20.1380, "lon": -54.3990 },
   { "nome": "Jardim, Mato Grosso do Sul", "lat": -21.4800, "lon": -56.1480 },
-  { "nome": "Jateí, Mato Grosso do Sul", "lat": -22.4800, "lon": -54.3070 }
+  { "nome": "Jateí, Mato Grosso do Sul", "lat": -22.4800, "lon": -54.3070 },
   { "nome": "Juti, Mato Grosso do Sul", "lat": -22.8590, "lon": -54.6060 },
   { "nome": "Ladário, Mato Grosso do Sul", "lat": -19.0040, "lon": -57.5970 },
   { "nome": "Laguna Carapã, Mato Grosso do Sul", "lat": -22.5440, "lon": -55.1500 },
