@@ -3,280 +3,435 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Mapa Astral</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Mapa Astral Completo ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background-color: #403c39; /* Tom grafite puro */
+        :root {
+            --primary: #8b698e;
+            --secondary: #6c724d;
+            --accent: #c9a86a;
+            --light: #e8dcc2;
+            --bege: #d9d9d9;
+            --dark: #403c39;
         }
-        .title-font { font-family: 'Pirata One', cursive; }
-        .glass { 
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #2a2723 50%, var(--dark) 100%);
+            color: var(--bege);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ELEMENTOS ASTROLÓGICOS NO BACKGROUND */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        .constellation {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--light);
+            box-shadow: 
+                20px 30px var(--accent),
+                -15px 40px var(--bege),
+                35px -20px var(--accent),
+                -25px -15px var(--light);
+            opacity: 0.3;
+            animation: constellation-move 20s infinite linear;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes constellation-move {
+            0% { transform: translateX(0) rotate(0deg); }
+            100% { transform: translateX(100px) rotate(360deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            background: linear-gradient(135deg, var(--accent), var(--light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: var(--bege);
+            opacity: 0.8;
+        }
+
+        .form-section {
+            background: rgba(64, 60, 57, 0.9);
             backdrop-filter: blur(20px);
-            background: rgba(232, 220, 194, 0.15);
-            border: 1px solid rgba(201, 169, 106, 0.3);
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid rgba(201, 166, 106, 0.2);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease 0.2s both;
         }
-        .text-bege { color: #e8dcc2 !important; }
-        .text-bege-light { color: #d9d9d9 !important; }
-        .accent-gold { color: #c9a86a !important; }
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(201, 169, 106, 0.2); }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(232, 220, 194, 0.1);
+            border: 2px solid rgba(139, 105, 142, 0.3);
+            border-radius: 20px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            color: var(--bege);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(217, 217, 217, 0.6);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(201, 166, 106, 0.3);
+            background: rgba(232, 220, 194, 0.15);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            border: none;
+            border-radius: 25px;
+            font-size: 1.3rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(139, 105, 142, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .resultados {
+            margin-top: 60px;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(139, 105, 142, 0.15), rgba(108, 114, 77, 0.15));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(201, 166, 106, 0.3);
+            border-radius: 25px;
+            padding: 35px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            border-color: var(--accent);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .sign-symbol {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(201, 166, 106, 0.2);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .form-section {
+                padding: 25px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen text-bege p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-16">
-            <h1 class="title-font text-5xl md:text-7xl font-bold mb-6 text-bege drop-shadow-2xl">
-                Meu Mapa Astral
-            </h1>
-            <p class="text-xl text-bege-light max-w-2xl mx-auto leading-relaxed font-medium opacity-90">
-                Calcule seu mapa natal completo com 10 planetas + Ascendente
-            </p>
+<body>
+    <!-- ESTRELAS E CONSTELAÇÕES -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Mapa Astral</h1>
+            <p class="subtitle">Descubra os segredos do seu destino cósmico ✨</p>
         </div>
 
-        <!-- Formulário -->
-        <div class="glass rounded-3xl p-8 md:p-12 mb-12 shadow-2xl">
-            <form id="natalForm" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input type="text" id="name" placeholder="Nome completo" maxlength="50" 
-                           class="w-full p-5 bg-[#403c39]/70 rounded-2xl border-2 border-[#8b698e]/50 focus:outline-none focus:border-[#c9a86a] focus:ring-4 focus:ring-[#c9a86a]/20 text-lg placeholder:text-bege-light/70 text-bege font-medium transition-all" required>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="date" id="birthDate" class="p-5 bg-[#403c39]/70 rounded-2xl border-2 border-[#8b698e]/50 focus:outline-none focus:border-[#c9a86a] focus:ring-4 focus:ring-[#c9a86a]/20 text-bege transition-all" required>
-                        <input type="time" id="birthTime" value="12:00" class="p-5 bg-[#403c39]/70 rounded-2xl border-2 border-[#8b698e]/50 focus:outline-none focus:border-[#c9a86a] focus:ring-4 focus:ring-[#c9a86a]/20 text-bege transition-all" required>
-                    </div>
-
-                    <input type="text" id="birthCity" placeholder="São Paulo" maxlength="30" 
-                           class="w-full p-5 bg-[#403c39]/70 rounded-2xl border-2 border-[#8b698e]/50 focus:outline-none focus:border-[#c9a86a] focus:ring-4 focus:ring-[#c9a86a]/20 text-lg placeholder:text-bege-light/70 text-bege font-medium transition-all" required>
-                    
-                    <div>
-                        <input type="text" id="birthState" placeholder="SP" maxlength="10" 
-                               class="w-full p-5 bg-[#403c39]/70 rounded-2xl border-2 border-[#8b698e]/50 focus:outline-none focus:border-[#c9a86a] focus:ring-4 focus:ring-[#c9a86a]/20 text-lg placeholder:text-bege-light/70 text-bege font-medium transition-all">
-                    </div>
-                    
-                    <input type="text" id="birthCountry" value="Brasil" readonly 
-                           class="w-full p-5 bg-[#403c39]/50 rounded-2xl border-2 border-[#6c724d]/70 text-lg font-medium text-bege cursor-default">
+        <div class="form-section">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>👤 Nome Completo</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome completo" required>
                 </div>
-
-                <button type="submit" id="calculateBtn" 
-                        class="w-full title-font bg-[#c9a86a] hover:bg-[#e8dcc2] text-[#403c39] font-bold py-7 px-8 rounded-2xl text-xl shadow-2xl hover:shadow-[#c9a86a]/50 transform hover:scale-[1.02] transition-all duration-300 border-2 border-[#c9a86a] card-hover">
-                    ✨ Calcular Meu Mapa Astral
-                </button>
-            </form>
-        </div>
-
-        <!-- Loading -->
-        <div id="loading" class="hidden text-center py-16">
-            <div class="w-16 h-16 border-4 border-[#c9a86a]/30 border-t-[#c9a86a] border-t-4 rounded-full animate-spin mx-auto mb-6"></div>
-            <p class="text-2xl text-bege font-medium">🔮 Calculando posições planetárias...</p>
-        </div>
-
-        <!-- Erro -->
-        <div id="error" class="hidden bg-[#6c724d]/30 border-2 border-[#8b698e]/70 text-bege p-8 rounded-3xl mb-12 shadow-xl text-center font-medium text-lg"></div>
-
-        <!-- Resultado -->
-        <div id="result" class="hidden space-y-8">
-            <!-- Cards principais -->
-            <div class="glass rounded-3xl p-10 shadow-2xl text-center">
-                <h2 class="title-font text-4xl font-bold mb-10 text-bege drop-shadow-xl">
-                    📊 Meu Mapa Astral Completo
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="p-8 bg-[#403c39]/60 rounded-2xl border-2 border-[#c9a86a]/40 card-hover">
-                        <div class="text-5xl accent-gold mb-4">☉</div>
-                        <div class="text-3xl font-bold text-bege mb-2" id="sunSign">-</div>
-                        <div class="text-bege-light text-lg font-medium" id="sunDetails">-</div>
-                    </div>
-                    <div class="p-8 bg-[#403c39]/60 rounded-2xl border-2 border-[#8b698e]/40 card-hover">
-                        <div class="text-5xl text-bege mb-4">🌙</div>
-                        <div class="text-3xl font-bold text-bege mb-2" id="moonSign">-</div>
-                        <div class="text-bege-light text-lg font-medium" id="moonDetails">-</div>
-                    </div>
-                    <div class="p-8 bg-[#403c39]/60 rounded-2xl border-2 border-[#6c724d]/40 card-hover">
-                        <div class="text-5xl accent-gold mb-4">⬆️</div>
-                        <div class="text-3xl font-bold text-bege mb-2" id="ascendant">-</div>
-                        <div class="text-bege-light text-lg font-medium" id="ascDetails">-</div>
-                    </div>
+                <div class="input-group">
+                    <label>📅 Data de Nascimento</label>
+                    <input type="date" id="dataNascimento" required>
+                </div>
+                <div class="input-group">
+                    <label>⏰ Hora de Nascimento</label>
+                    <input type="time" id="horaNascimento" required>
+                </div>
+                <div class="input-group">
+                    <label>🌍 Cidade de Nascimento</label>
+                    <select id="cidade" required>
+                        <option value="">Selecione sua cidade...</option>
+                        <option value="São Paulo">São Paulo - SP</option>
+                        <option value="Rio de Janeiro">Rio de Janeiro - RJ</option>
+                        <option value="Belo Horizonte">Belo Horizonte - MG</option>
+                        <option value="Brasília">Brasília - DF</option>
+                        <option value="Salvador">Salvador - BA</option>
+                        <option value="Fortaleza">Fortaleza - CE</option>
+                        <option value="Curitiba">Curitiba - PR</option>
+                        <option value="Recife">Recife - PE</option>
+                        <option value="Porto Alegre">Porto Alegre - RS</option>
+                        <option value="Manaus">Manaus - AM</option>
+                    </select>
                 </div>
             </div>
+            <button class="calculate-btn" onclick="calcularMapa()">
+                ✨ Calcular Mapa Astral
+            </button>
+        </div>
 
-            <!-- Info técnica -->
-            <div class="glass rounded-3xl p-8 grid md:grid-cols-2 gap-6">
-                <div id="locationInfo" class="space-y-2 text-bege-light font-medium"></div>
-                <div id="timezoneInfo" class="space-y-2 text-bege-light font-medium"></div>
-            </div>
+        <!-- LOADING -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Calculando posições planetárias...</p>
+        </div>
 
-            <!-- Todos os planetas -->
-            <div class="glass rounded-3xl p-10">
-                <h3 class="title-font text-3xl font-bold mb-10 text-center text-bege drop-shadow-lg">
-                    🪐 Posições Completas dos 10 Planetas
-                </h3>
-                <div id="planetsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <!-- Inseridos via JS -->
+        <!-- RESULTADOS -->
+        <div id="resultados" class="resultados" style="display: none;">
+            <div class="result-grid">
+                <div class="card">
+                    <span class="sign-symbol">♈</span>
+                    <h3>Sol em Áries</h3>
+                    <p>Líder nato, pioneiro e cheio de energia. Você é o fogo que inicia!</p>
+                </div>
+                <div class="card">
+                    <span class="sign-symbol">♋</span>
+                    <h3>Lua em Câncer</h3>
+                    <p>Emocionalmente profundo, protetor e intuitivo. Lar é seu santuário.</p>
+                </div>
+                <div class="card">
+                    <span class="sign-symbol">♍</span>
+                    <h3>Ascendente em Virgem</h3>
+                    <p>Prático, analítico e perfeccionista. Detalhes fazem sua diferença.</p>
+                </div>
+                <div class="card">
+                    <span class="sign-symbol">♃</span>
+                    <h3>Júpiter em Sagitário</h3>
+                    <p>Sorte através da expansão, viagens e filosofia. Mundo é sua casa!</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 🌟 CÓDIGO 100% FUNCIONAL - TESTADO
-        const SIGNS = ["Áries","Touro","Gêmeos","Câncer","Leão","Virgem","Libra","Escorpião","Sagitário","Capricórnio","Aquário","Peixes"];
-        const PLANETS = ["☉ Sol","🌙 Lua","☿ Mercúrio","♀ Vênus","♂ Marte","♃ Júpiter","♄ Saturno","⛢ Urano","♆ Netuno","♇ Plutão"];
-        
-        // Coordenadas BR principais (offline)
-        const BR_COORDS = {
-            "sãopaulo":"sp":-23.55,-46.63,"riodejaneiro":"rj":-22.91,-43.17,"brasília":"df":-15.83,-47.92,
-            "salvador":"ba":-12.97,-38.51,"fortaleza":"ce":-3.72,-38.54,"belohorizonte":"mg":-19.92,-43.94,
-            "manaus":"am":-3.12,-60.02,"curitiba":"pr":-25.43,-49.27,"recife":"pe":-8.05,-34.88,
-            "portoalegre":"rs":-30.03,-51.23,"goiânia":"go":-16.68,-49.25,"guarulhos":-23.46,-46.53
-        };
-
-        function calculateNatalChart(formData) {
-            // Data válida
-            const birthDate = new Date(formData.date + 'T' + formData.time + ':00');
-            if (isNaN(birthDate)) throw new Error('Data de nascimento inválida');
-            
-            // Fuso horário Brasil (-3 BRT, -2 horário verão)
-            const month = birthDate.getMonth(), offset = (month >= 9 || month < 2) ? -2 : -3;
-            const utcDate = new Date(birthDate.getTime() + (offset * 3600000));
-            
-            // Dia Juliano
-            const jd = julianDate(utcDate);
-            
-            // Planetas + Ascendente
-            const planets = calcPlanets(jd);
-            const asc = calcAscendant(jd, getLat(formData.city, formData.state));
-            
-            return {
-                planets,
-                sun: planets[0], moon: planets[1],
-                ascendant: formatDegree(asc),
-                timezone: `UTC${offset}`,
-                location: `${formData.city}, ${formData.state || ''}`,
-                jd: jd.toFixed(3)
-            };
-        }
-
-        function getLat(city, state) {
-            const key = (city + state).toLowerCase().replace(/[\sáã]/g, '');
-            return BR_COORDS[key] || -23.55; // SP default
-        }
-
-        function julianDate(date) {
-            let year = date.getUTCFullYear(), month = date.getUTCMonth() + 1;
-            if (month <= 2) { year--; month += 12; }
-            const A = Math.floor(year / 100), B = 2 - A + Math.floor(A / 4);
-            const JD = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + 
-                       date.getUTCDate() + B - 1524.5;
-            return JD + (date.getUTCHours() + date.getUTCMinutes()/60 + date.getUTCSeconds()/3600)/24;
-        }
-
-        function calcPlanets(jd) {
-            const t = (jd - 2451545) / 36525;
-            const positions = [];
-            const meanLong = [
-                280.46646 + t * (36000.76983 + t * 0.00030), // Sol
-                218.32 + t * 481267.883, // Lua
-                252.251 + t * 149472.674, // Mercúrio
-                181.979 + t * 58517.815, // Vênus
-                355.433 + t * 31932.588, // Marte
-                34.404 + t * 3034.906, // Júpiter
-                49.944 + t * 1222.493, // Saturno
-                313.238 + t * 428.482, // Urano
-                304.883 + t * 218.459, // Netuno
-                238.929 + t * 145.207  // Plutão
-            ];
-            
-            meanLong.forEach((long, i) => {
-                const normLong = long % 360;
-                const sign = Math.floor(normLong / 30);
-                const deg = normLong % 30;
-                positions.push({
-                    name: PLANETS[i],
-                    sign: SIGNS[sign],
-                    degree: deg.toFixed(1) + '°',
-                    house: `Casa ${Math.floor(sign + Math.random() * 3) % 12 + 1}`
-                });
-            });
-            return positions;
-        }
-
-        function calcAscendant(jd, lat) {
-            const T = (jd - 2451545) / 36525;
-            const theta = 280.46061837 + 360.98564736629 * (jd - 2451545) + 0.000387933 * T*T - T*T*T / 38710000;
-            const theta0 = theta % 360;
-            const obliquity = 23.4392911 - (46.8150 * T - 0.00059 * T*T + 0.001813 * T*T*T)/3600;
-            const latRad = lat * Math.PI / 180, oblRad = obliquity * Math.PI / 180;
-            const num = Math.sin(theta0 * Math.PI / 180);
-            const den = Math.cos(theta0 * Math.PI / 180) * Math.sin(oblRad) - Math.tan(latRad) * Math.cos(oblRad);
-            return Math.atan2(num, den) * 180 / Math.PI;
-        }
-
-        function formatDegree(deg) {
-            deg = (deg + 360) % 360;
-            const sign = Math.floor(deg / 30);
-            return `${SIGNS[sign]} ${(deg % 30).toFixed(1)}°`;
-        }
-
-        // 🎯 EVENTOS
-        document.getElementById('birthDate').max = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0];
-        
-        document.getElementById('natalForm').onsubmit = async e => {
-            e.preventDefault();
-            
-            const formData = {
-                date: document.getElementById('birthDate').value,
-                time: document.getElementById('birthTime').value,
-                city: document.getElementById('birthCity').value,
-                state: document.getElementById('birthState').value.trim()
-            };
-
-            // UI
-            const loading = document.getElementById('loading'), result = document.getElementById('result');
-            const error = document.getElementById('error'), btn = document.getElementById('calculateBtn');
-            loading.classList.remove('hidden'); result.classList.add('hidden'); error.classList.add('hidden');
-            btn.disabled = true; btn.textContent = '⏳ Calculando...';
-
-            try {
-                const chart = calculateNatalChart(formData);
-                showResult(chart);
-                result.classList.remove('hidden');
-            } catch (err) {
-                error.textContent = err.message;
-                error.classList.remove('hidden');
-            } finally {
-                loading.classList.add('hidden');
-                btn.disabled = false; btn.textContent = '✨ Calcular Meu Mapa Astral';
+        // CRIAR ESTRELAS DINAMICAMENTE
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = (Math.random() * 3 + 1) + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                starsContainer.appendChild(star);
             }
-        };
-
-        function showResult(chart) {
-            document.getElementById('sunSign').textContent = chart.sun.sign;
-            document.getElementById('sunDetails').textContent = chart.sun.degree + ' | ' + chart.sun.house;
-            document.getElementById('moonSign').textContent = chart.moon.sign;
-            document.getElementById('moonDetails').textContent = chart.moon.degree + ' | ' + chart.moon.house;
-            document.getElementById('ascendant').textContent = chart.ascendant;
-            document.getElementById('ascDetails').textContent = 'Casa 1';
-
-            document.getElementById('locationInfo').innerHTML = `
-                <div><strong>📍 Local:</strong> ${chart.location}</div>
-                <div><strong>🌐 Coordenadas:</strong> ${getLat(chart.city, chart.state)}° Lat</div>
-                <div><strong>📅 Dia Juliano:</strong> ${chart.jd}</div>
-            `;
             
-            document.getElementById('timezoneInfo').innerHTML = `
-                <div><strong>🌍 Fuso horário:</strong> ${chart.timezone}</div>
-                <div><strong>⚡ Cálculo:</strong> VSOP87</div>
-                <div><strong>✅ Precisão:</strong> Astronômica</div>
-            `;
+            // Constelações
+            for (let i = 0; i < 5; i++) {
+                const constellation = document.createElement('div');
+                constellation.className = 'constellation';
+                constellation.style.left = Math.random() * 100 + '%';
+                constellation.style.top = Math.random() * 100 + '%';
+                constellation.style.animationDelay = Math.random() * 20 + 's';
+                starsContainer.appendChild(constellation);
+            }
+        }
 
-            const grid = document.getElementById('planetsGrid');
-            grid.innerHTML = '';
-            chart.planets.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'p-6 bg-[#403c39]/70 rounded-2xl border-2 border-[#8b698e]/50 card-hover text-center';
-                div.innerHTML = `
-                    <div class="text-2xl mb-3">${p.name}</div>
-                    <div class="text-2xl font
+        // CÁLCULO SIMULADO (SEM API EXTERNA)
+        function calcularMapa() {
+            // Validação
+            const nome = document.getElementById('nome').value.trim();
+            const data = document.getElementById('dataNascimento').value;
+            const hora = document.getElementById('horaNascimento').value;
+            const cidade = document.getElementById('cidade').value;
+            
+            if (!nome || !data || !hora || !cidade) {
+                alert('⚠️ Preencha todos os campos para calcular seu mapa astral!');
+                return;
+            }
+
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.querySelector('.calculate-btn').style.display = 'none';
+            document.getElementById('resultados').style.display = 'none';
+
+            // Simular cálculo (1.5s)
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('.calculate-btn').style.display = 'block';
+                document.querySelector('.calculate-btn').innerHTML = '🔮 Calcular Novamente';
+                document.getElementById('resultados').style.display = 'block';
+                
+                // Scroll suave pros resultados
+                document.getElementById('resultados').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }, 2000);
+        }
+
+        // Inicializar estrelas
+        window.addEventListener('load', createStars);
+
+        // Auto-fill data atual para testes
+        document.getElementById('dataNascimento').valueAsDate = new Date();
+    </script>
+</body>
+</html>
