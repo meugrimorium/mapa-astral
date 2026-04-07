@@ -191,7 +191,7 @@
           <label class="form-label">Cidade de nascimento</label>
 
           <input id="cidade" class="form-input" placeholder="Digite sua cidade" autocomplete="off" />
-          <div id="cidades-brasil.json" class="autocomplete-list"></div>
+          <div id="lista-cidades" class="autocomplete-list"></div>
 
         </div>
 
@@ -246,17 +246,6 @@ async function carregarCidades() {
   const res = await fetch("cidades-brasil.json");
   cidades = await res.json();
   console.log("Cidades carregadas:", cidades.length);
-}
-
-/* -----------------------------------------
-   INICIALIZAÇÃO — GARANTE QUE O JSON CARREGOU
------------------------------------------ */
-
-  await carregarCidades(); // garante que o JSON está pronto
-
-  ativarAutocomplete();
-
-  botao.disabled = false;
 }
 
 /* -----------------------------------------
