@@ -1,139 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Mapa Astral ✨</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Mapa Astral ✨</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <style>
-        :root {
-            --primary: #8b698e;
-            --secondary: #6c724d;
-            --accent: #c9a86a;
-            --light: #e8dcc2;
-            --bege: #d9d9d9;
-            --dark: #403c39;
-        }
+<style>
+:root {
+--primary:#8b698e;
+--secondary:#6c724d;
+--accent:#c9a86a;
+--light:#e8dcc2;
+--bege:#d9d9d9;
+--dark:#403c39;
+}
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+* {margin:0;padding:0;box-sizing:border-box;}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--dark);
-            color: var(--bege);
-        }
+body {
+font-family:'Inter',sans-serif;
+background:var(--dark);
+color:var(--bege);
+}
 
-        .container {
-            max-width:1200px;
-            margin:0 auto;
-            padding:20px;
-        }
+.container {
+max-width:1200px;
+margin:0 auto;
+padding:20px;
+}
 
-        .header {
-            text-align:center;
-            margin-bottom:40px;
-        }
+.header {
+text-align:center;
+margin-bottom:40px;
+}
 
-        .header h1 {
-            font-family:'Pirata One', cursive;
-            font-size:3rem;
-            color:var(--accent);
-        }
+.header h1 {
+font-family:'Pirata One';
+font-size:3rem;
+color:var(--accent);
+}
 
-        .form-section {
-            background: rgba(64,60,57,0.95);
-            padding:30px;
-            border-radius:20px;
-        }
+.form-section {
+background:rgba(64,60,57,0.95);
+padding:30px;
+border-radius:20px;
+}
 
-        .form-grid {
-            display:grid;
-            gap:20px;
-        }
+.form-grid {
+display:grid;
+gap:20px;
+}
 
-        .input-group {
-            position: relative;
-        }
+.input-group {
+position:relative;
+}
 
-        .input-group input {
-            width:100%;
-            padding:15px;
-            border-radius:15px;
-            border:none;
-        }
+.input-group input {
+width:100%;
+padding:15px;
+border-radius:15px;
+border:none;
+}
 
-        .calculate-btn {
-            margin-top:20px;
-            padding:15px;
-            width:100%;
-            cursor:pointer;
-        }
+.calculate-btn {
+margin-top:20px;
+padding:15px;
+width:100%;
+cursor:pointer;
+background:linear-gradient(135deg,var(--primary),var(--secondary));
+color:var(--light);
+border:none;
+border-radius:20px;
+font-family:'Pirata One';
+}
 
-        /* autocomplete */
-        #lista-cidades {
-            position:absolute;
-            width:100%;
-            background:#403c39;
-            max-height:200px;
-            overflow-y:auto;
-            border-radius:10px;
-            z-index:999;
-        }
+#lista-cidades {
+position:absolute;
+width:100%;
+background:#403c39;
+max-height:200px;
+overflow-y:auto;
+border-radius:10px;
+z-index:999;
+}
 
-        #lista-cidades div {
-            padding:10px;
-            cursor:pointer;
-        }
+#lista-cidades div {
+padding:10px;
+cursor:pointer;
+}
 
-        #lista-cidades div:hover {
-            background:rgba(201,166,106,0.2);
-        }
+#lista-cidades div:hover {
+background:rgba(201,166,106,0.2);
+}
 
-        .card {
-            background:#555;
-            padding:15px;
-            margin-top:10px;
-            border-radius:10px;
-        }
-    </style>
+.resultados {
+margin-top:40px;
+display:grid;
+gap:15px;
+}
+
+.card {
+background:rgba(139,105,142,0.2);
+padding:15px;
+border-radius:15px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>Meu Mapa Astral</h1>
-    </div>
+<div class="header">
+<h1>Meu Mapa Astral</h1>
+<p>Descubra sua essência astrológica</p>
+</div>
 
-    <div class="form-section">
-        <div class="form-grid">
+<div class="form-section">
+<div class="form-grid">
 
-            <div class="input-group">
-                <input type="text" id="nome" placeholder="Nome completo">
-            </div>
+<div class="input-group">
+<input type="text" id="nome" placeholder="Nome completo">
+</div>
 
-            <div class="input-group">
-                <input type="date" id="dataNascimento">
-            </div>
+<div class="input-group">
+<input type="date" id="dataNascimento">
+</div>
 
-            <div class="input-group">
-                <input type="time" id="horaNascimento">
-            </div>
+<div class="input-group">
+<input type="time" id="horaNascimento">
+</div>
 
-            <div class="input-group">
-                <input type="text" id="cidade" placeholder="Digite sua cidade..." autocomplete="off">
-                <div id="lista-cidades"></div>
-            </div>
+<div class="input-group">
+<input type="text" id="cidade" placeholder="Digite sua cidade..." autocomplete="off">
+<div id="lista-cidades"></div>
+</div>
 
-        </div>
+</div>
 
-        <button class="calculate-btn" onclick="calcularMapa()">✨ Calcular Mapa Astral</button>
-    </div>
+<button class="calculate-btn" onclick="calcularMapa()">✨ Calcular Mapa Astral</button>
+</div>
 
-    <div id="resultados"></div>
+<div id="resultados" class="resultados"></div>
+
 </div>
 
 <script>
@@ -175,7 +186,7 @@ inputCidade.addEventListener('input', () => {
     });
 });
 
-// cálculo (mantido simples por enquanto)
+// cálculo (simulação estruturada)
 function calcularMapa() {
     const nome = document.getElementById('nome').value;
     const data = document.getElementById('dataNascimento').value;
@@ -189,14 +200,51 @@ function calcularMapa() {
         return;
     }
 
+    const mapa = {
+        "Sol": "Leão 22°",
+        "Lua": "Câncer 15°",
+        "Mercúrio": "Virgem 8°",
+        "Vênus": "Libra 29°",
+        "Marte": "Áries 3°",
+        "Júpiter": "Sagitário 17°",
+        "Saturno": "Aquário 25°",
+        "Urano": "Peixes 12°",
+        "Netuno": "Aquário 28°",
+        "Plutão": "Sagitário 5°",
+        "Quiron": "Touro 19°",
+        "Lilith": "Escorpião 11°",
+        "Nodo Norte": "Gêmeos 14°",
+        "Parte da Fortuna": "Virgem 7°",
+        "Vertex": "Libra 22°",
+        "Ascendente": "Virgem 14°",
+        "Meio do Céu": "Gêmeos 18°"
+    };
+
+    mostrarResultados(nome, data, hora, mapa);
+}
+
+// renderizar
+function mostrarResultados(nome, data, hora, mapa) {
     const resultados = document.getElementById('resultados');
-    resultados.innerHTML = `
-        <div class="card">
-            <h3>${nome}</h3>
-            <p>${data} ${hora}</p>
-            <p>Lat: ${lat} | Lon: ${lon}</p>
-        </div>
+    resultados.innerHTML = '';
+
+    const header = document.createElement('div');
+    header.className = 'card';
+    header.innerHTML = `
+        <h3>${nome}</h3>
+        <p>${data} às ${hora}</p>
     `;
+    resultados.appendChild(header);
+
+    Object.keys(mapa).forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+            <h3>${item}</h3>
+            <p>${mapa[item]}</p>
+        `;
+        resultados.appendChild(div);
+    });
 }
 
 // init
