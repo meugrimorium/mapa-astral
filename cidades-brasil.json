@@ -483,8 +483,7 @@
   { "nome": "Itapuranga, Goiás", "lat": -15.5600, "lon": -49.9490 },
   { "nome": "Itarumã, Goiás", "lat": -18.7640, "lon": -51.3480 },
   { "nome": "Itauçu, Goiás", "lat": -16.2020, "lon": -49.6100 },
-  { "nome": "Itumbiara, Goiás", "lat": -18.4090, "lon": -49.2150 }
-  { "nome": "Colinas do Sul, Goiás", "lat": -14.1520, "lon": -48.0760 },
+  { "nome": "Itumbiara, Goiás", "lat": -18.4090, "lon": -49.2150 },
   { "nome": "Córrego do Ouro, Goiás", "lat": -16.2910, "lon": -50.5500 },
   { "nome": "Corumbá de Goiás, Goiás", "lat": -15.9240, "lon": -48.8110 },
   { "nome": "Corumbaíba, Goiás", "lat": -18.1410, "lon": -48.5620 },
@@ -603,7 +602,7 @@
   { "nome": "Piracanjuba, Goiás", "lat": -17.3020, "lon": -49.0160 },
   { "nome": "Piranhas, Goiás", "lat": -16.4250, "lon": -51.8230 },
   { "nome": "Pirenópolis, Goiás", "lat": -15.8520, "lon": -48.9580 },
-  { "nome": "Pires do Rio, Goiás", "lat": -17.3010, "lon": -48.2790 }
+  { "nome": "Pires do Rio, Goiás", "lat": -17.3010, "lon": -48.2790 },
   { "nome": "Planaltina, Goiás", "lat": -15.4520, "lon": -47.6080 },
   { "nome": "Pontalina, Goiás", "lat": -17.5220, "lon": -49.4480 },
   { "nome": "Porangatu, Goiás", "lat": -13.4400, "lon": -49.1480 },
@@ -663,7 +662,7 @@
   { "nome": "Vianópolis, Goiás", "lat": -16.7400, "lon": -48.5150 },
   { "nome": "Vicentinópolis, Goiás", "lat": -17.7320, "lon": -49.8040 },
   { "nome": "Vila Boa, Goiás", "lat": -15.0380, "lon": -47.0520 },
-  { "nome": "Vila Propício, Goiás", "lat": -15.4550, "lon": -48.8810 }
+  { "nome": "Vila Propício, Goiás", "lat": -15.4550, "lon": -48.8810 },
   { "nome": "Pontal do Araguaia, Mato Grosso", "lat": -15.8900, "lon": -52.0070 },
   { "nome": "Ponte Branca, Mato Grosso", "lat": -16.7580, "lon": -52.8360 },
   { "nome": "Pontes e Lacerda, Mato Grosso", "lat": -15.2260, "lon": -59.3430 },
@@ -710,7 +709,7 @@
   { "nome": "Várzea Grande, Mato Grosso", "lat": -15.6460, "lon": -56.1320 },
   { "nome": "Vera, Mato Grosso", "lat": -12.3010, "lon": -55.3040 },
   { "nome": "Vila Bela da Santíssima Trindade, Mato Grosso", "lat": -15.0060, "lon": -59.9500 },
-  { "nome": "Vila Rica, Mato Grosso", "lat": -10.0130, "lon": -51.1180 }
+  { "nome": "Vila Rica, Mato Grosso", "lat": -10.0130, "lon": -51.1180 },
   { "nome": "Acorizal, Mato Grosso", "lat": -15.1940, "lon": -56.3630 },
   { "nome": "Água Boa, Mato Grosso", "lat": -14.0500, "lon": -52.1600 },
   { "nome": "Alta Floresta, Mato Grosso", "lat": -9.8660, "lon": -56.0860 },
@@ -771,7 +770,7 @@
   { "nome": "Juara, Mato Grosso", "lat": -11.2630, "lon": -57.5240 },
   { "nome": "Juína, Mato Grosso", "lat": -11.3720, "lon": -58.7480 },
   { "nome": "Juruena, Mato Grosso", "lat": -10.3170, "lon": -58.3590 },
-  { "nome": "Juscimeira, Mato Grosso", "lat": -16.0530, "lon": -54.8850 }
+  { "nome": "Juscimeira, Mato Grosso", "lat": -16.0530, "lon": -54.8850 },
   { "nome": "Lambari D'Oeste, Mato Grosso", "lat": -15.3180, "lon": -58.0040 },
   { "nome": "Lucas do Rio Verde, Mato Grosso", "lat": -13.0580, "lon": -55.9040 },
   { "nome": "Luciara, Mato Grosso", "lat": -11.2210, "lon": -50.6670 },
@@ -810,7 +809,7 @@
   { "nome": "Porto Alegre do Norte, Mato Grosso", "lat": -10.8760, "lon": -51.6350 },
   { "nome": "Porto dos Gaúchos, Mato Grosso", "lat": -11.5330, "lon": -57.4130 },
   { "nome": "Porto Esperidião, Mato Grosso", "lat": -15.8570, "lon": -58.4610 },
-  { "nome": "Porto Estrela, Mato Grosso", "lat": -15.3230, "lon": -57.2200 }
+  { "nome": "Porto Estrela, Mato Grosso", "lat": -15.3230, "lon": -57.2200 },
   { "nome": "Porto Esperidião, Mato Grosso", "lat": -15.8570, "lon": -58.4610 },
   { "nome": "Porto Estrela, Mato Grosso", "lat": -15.3230, "lon": -57.2200 },
   { "nome": "Poxoréu, Mato Grosso", "lat": -15.8290, "lon": -54.3880 },
@@ -852,7 +851,7 @@
   { "nome": "Várzea Grande, Mato Grosso", "lat": -15.6460, "lon": -56.1320 },
   { "nome": "Vera, Mato Grosso", "lat": -12.3010, "lon": -55.3040 },
   { "nome": "Vila Bela da Santíssima Trindade, Mato Grosso", "lat": -15.0060, "lon": -59.9500 },
-  { "nome": "Vila Rica, Mato Grosso", "lat": -10.0130, "lon": -51.1180 }
+  { "nome": "Vila Rica, Mato Grosso", "lat": -10.0130, "lon": -51.1180 },
   { "nome": "Água Clara, Mato Grosso do Sul", "lat": -20.4450, "lon": -52.8790 },
   { "nome": "Alcinópolis, Mato Grosso do Sul", "lat": -18.3250, "lon": -53.7040 },
   { "nome": "Amambai, Mato Grosso do Sul", "lat": -23.1050, "lon": -55.2250 },
