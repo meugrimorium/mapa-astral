@@ -56,7 +56,7 @@ async function getCoordinates(city, state, country) {
 async function getTimezoneInfo(lat, lng, date) {
   // Use TimezoneDB ou similar
   const response = await fetch(
-    `https://api.timezonedb.com/v2.1/get-time-zone?key=YOUR_API_KEY&format=json&by=position&lat=${lat}&lng=${lng}&time=${date.toISOString()}`
+    `https://api.timezonedb.com/v2.1/get-time-zone?key=RL2ZQW5073N0&format=json&by=position&lat=${lat}&lng=${lng}&time=${date.toISOString()}`
   );
   const data = await response.json();
   
