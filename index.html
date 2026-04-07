@@ -350,7 +350,7 @@ function ativarAutocomplete() {
       item.className = "autocomplete-item";
       item.textContent = c.nome;
 
-      item.onclick = () => {
+      item.addEventListener("mousedown", () => {
         inputCidade.value = c.nome;
         selectedLocation = {
           name: c.nome,
@@ -739,7 +739,8 @@ function ativarAutocomplete() {
           formView.classList.add("view-visible");
         }, 350);
       }
-
+    </script>
+              
     <!-- ==========================
          FIM DO SCRIPT
          ========================== -->
