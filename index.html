@@ -80,8 +80,6 @@
       transform: translateY(0);
     }
 
-    /* FORMULÁRIO */
-
     .form-card {
       background: rgba(34, 28, 27, 0.96);
       border-radius: 18px;
@@ -158,19 +156,23 @@
       cursor: pointer;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
     }
+
     table {
-  color: var(--bege);
-  font-size: 13px;
-}
+      color: var(--bege);
+      font-size: 13px;
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-table td, table th {
-  border: 1px solid rgba(201, 168, 106, 0.3);
-  text-align: left;
-}
+    table td, table th {
+      border: 1px solid rgba(201, 168, 106, 0.3);
+      text-align: left;
+      padding: 8px;
+    }
 
-table tr:nth-child(even) {
-  background: rgba(34, 28, 27, 0.5);
-}
+    table tr:nth-child(even) {
+      background: rgba(34, 28, 27, 0.5);
+    }
   </style>
 </head>
 
@@ -202,10 +204,8 @@ table tr:nth-child(even) {
 
         <div class="form-group">
           <label class="form-label">Cidade de nascimento</label>
-
           <input id="cidade" class="form-input" placeholder="Digite sua cidade" autocomplete="off" />
           <div id="lista-cidades" class="autocomplete-list"></div>
-
         </div>
 
         <div class="form-footer" style="grid-column: 1 / -1; margin-top: 8px;">
@@ -214,50 +214,454 @@ table tr:nth-child(even) {
 
       </form>
     </main>
-    <!-- ==========================
-         PARTE 2 — MOTOR ASTROLÓGICO
-         ========================== -->
 
-    <script>
-      /* -----------------------------------------
-         CONSTANTES E LISTAS
-      ----------------------------------------- */
+    <!-- VIEW: RESULTADO -->
+    <main id="view-result" class="view view-hidden" style="margin-top: 24px;">
 
-      const DEG2RAD = Math.PI / 180;
-      const RAD2DEG = 180 / Math.PI;
+      <h2 id="result-title" style="font-family: 'Pirata One', cursive; font-size: 28px; margin-bottom: 6px;"></h2>
+      <div id="result-meta" style="opacity: 0.8; margin-bottom: 18px;"></div>
 
-      const ZODIAC_SIGNS = [
-        "Áries", "Touro", "Gêmeos", "Câncer", "Leão", "Virgem",
-        "Libra", "Escorpião", "Sagitário", "Capricórnio", "Aquário", "Peixes"
-      ];
+      <div style="display: flex; justify-content: center; margin-bottom: 24px;">
+        <svg id="chart-svg" width="400" height="400"></svg>
+      </div>
 
-      const PLANETS = [
-        { key: "sun", name: "Sol" },
-        { key: "moon", name: "Lua" },
-        { key: "mercury", name: "Mercúrio" },
-        { key: "venus", name: "Vênus" },
-        { key: "mars", name: "Marte" },
-        { key: "jupiter", name: "Júpiter" },
-        { key: "saturn", name: "Saturno" },
-        { key: "uranus", name: "Urano" },
-        { key: "neptune", name: "Netuno" },
-        { key: "pluto", name: "Plutão" }
-      ];
+      <table style="margin-bottom: 24px;">
+        <thead>
+          <tr style="background: rgba(201,168,106,0.15);">
+            <th>Planeta</th>
+            <th>Signo</th>
+            <th>Posição</th>
+            <th>Casa</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
 
-      let selectedLocation = null;
+      <div id="summary-text" style="margin-bottom: 24px; line-height: 1.6;"></div>
 
-/* -----------------------------------------
-   CARREGAR CIDADES DO BRASIL
------------------------------------------ */
-document.addEventListener("DOMContentLoaded", async () => {
-  await carregarCidades();
-  ativarAutocomplete();
-  
-});
-  
-        /* -----------------------------------------
-         SUBMISSÃO DO FORMULÁRIO
-      ----------------------------------------- */
+      <pre id="mono-block" style="
+        background: #111;
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(201,168,106,0.3);
+        white-space: pre-wrap;
+        margin-bottom: 24px;
+      "></pre>
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button id="btn-back" class="btn-primary">Voltar</button>
+        <button id="btn-copy" class="btn-primary">Copiar texto</button>
+        <button id="btn-pdf" class="btn-primary">Salvar PDF</button>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- SCRIPT PRINCIPAL -->
+  <script>
+    const DEG2RAD = Math.PI / 180;
+    const RAD2DEG = 180 / Math.PI;
+
+    const ZODIAC_SIGNS = [
+      "Áries", "Touro", "Gêmeos", "Câncer", "Leão", "Virgem",
+      "Libra", "Escorpião", "Sagitário", "Capricórnio", "Aquário", "Peixes"
+    ];
+
+    const PLANETS = [
+      { key: "sun", name: "Sol" },
+      { key: "moon", name: "Lua" },
+      { key: "mercury", name: "Mercúrio" },
+      { key: "venus", name: "Vênus" },
+      { key: "mars", name: "Marte" },
+      { key: "jupiter", name: "Júpiter" },
+      { key: "saturn", name: "Saturno" },
+      { key: "uranus", name: "Urano" },
+      { key: "neptune", name: "Netuno" },
+      { key: "pluto", name: "Plutão" }
+    ];
+
+    let selectedLocation = null;
+    let cidades = [];
+
+    const DateTime = luxon.DateTime;
+
+    async function carregarCidades() {
+      try {
+        const res = await fetch("cidades-brasil.json");
+        cidades = await res.json();
+      } catch (e) {
+        console.error("Erro ao carregar cidades-brasil.json", e);
+      }
+    }
+
+    function ativarAutocomplete() {
+      const inputCidade = document.getElementById("cidade");
+      const lista = document.getElementById("lista-cidades");
+
+      inputCidade.addEventListener("input", () => {
+        const termo = inputCidade.value.toLowerCase();
+        lista.innerHTML = "";
+
+        if (termo.length < 2) {
+          lista.style.display = "none";
+          return;
+        }
+
+        if (cidades.length === 0) {
+          console.warn("Cidades ainda não carregadas");
+          return;
+        }
+
+        const filtradas = cidades
+          .filter(c => c.nome.toLowerCase().includes(termo))
+          .slice(0, 12);
+
+        filtradas.forEach(c => {
+          const item = document.createElement("div");
+          item.className = "autocomplete-item";
+          item.textContent = c.nome;
+
+          item.addEventListener("mousedown", () => {
+            inputCidade.value = c.nome;
+            selectedLocation = {
+              name: c.nome,
+              lat: c.lat,
+              lon: c.lon,
+              timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+            lista.style.display = "none";
+          });
+
+          lista.appendChild(item);
+        });
+
+        lista.style.display = filtradas.length ? "block" : "none";
+      });
+    }
+
+    function pad2(n) {
+      return n < 10 ? "0" + n : "" + n;
+    }
+
+    function formatDegree(deg) {
+      let d = ((deg % 360) + 360) % 360;
+      const signIndex = Math.floor(d / 30);
+      const sign = ZODIAC_SIGNS[signIndex];
+      const degInSign = d - signIndex * 30;
+      const whole = Math.floor(degInSign);
+      const minutes = Math.round((degInSign - whole) * 60);
+      return {
+        sign,
+        text: `${pad2(whole)}°${pad2(minutes)}' ${sign}`
+      };
+    }
+
+    function toUTCFromLocal(dateStr, timeStr, timezoneId) {
+      const [year, month, day] = dateStr.split("-").map(Number);
+      const [hour, minute] = timeStr.split(":").map(Number);
+
+      const dt = DateTime.fromObject(
+        { year, month, day, hour, minute },
+        { zone: timezoneId }
+      );
+
+      const utc = dt.toUTC();
+
+      return {
+        year: utc.year,
+        month: utc.month,
+        day: utc.day,
+        hour: utc.hour,
+        minute: utc.minute,
+        second: utc.second
+      };
+    }
+
+    function julianDate(y, m, d, hourFraction) {
+      if (m <= 2) {
+        y -= 1;
+        m += 12;
+      }
+      const A = Math.floor(y / 100);
+      const B = 2 - A + Math.floor(A / 5);
+      return Math.floor(365.25 * (y + 4716))
+        + Math.floor(30.6001 * (m + 1))
+        + d + B - 1524.5 + hourFraction;
+    }
+
+    function calcGMST(jd) {
+      const T = (jd - 2451545.0) / 36525.0;
+      let GMST = 280.46061837
+        + 360.98564736629 * (jd - 2451545.0)
+        + 0.000387933 * T * T
+        - (T * T * T) / 38710000.0;
+      return ((GMST % 360) + 360) % 360;
+    }
+
+    function localSiderealTime(jd, lon) {
+      let lst = calcGMST(jd) + lon;
+      return ((lst % 360) + 360) % 360;
+    }
+
+    function approximatePlanetLongitude(jd, planetKey) {
+      const d = jd - 2451545.0;
+      switch (planetKey) {
+        case "sun":     return ((280.460 + 0.9856474 * d) % 360 + 360) % 360;
+        case "moon":    return ((218.316 + 13.176396 * d) % 360 + 360) % 360;
+        case "mercury": return ((60.0   + 4.09233445 * d) % 360 + 360) % 360;
+        case "venus":   return ((90.0   + 1.60213034 * d) % 360 + 360) % 360;
+        case "mars":    return ((120.0  + 0.52402075 * d) % 360 + 360) % 360;
+        case "jupiter": return ((150.0  + 0.08308529 * d) % 360 + 360) % 360;
+        case "saturn":  return ((180.0  + 0.03344414 * d) % 360 + 360) % 360;
+        case "uranus":  return ((210.0  + 0.01172834 * d) % 360 + 360) % 360;
+        case "neptune": return ((240.0  + 0.00598103 * d) % 360 + 360) % 360;
+        case "pluto":   return ((270.0  + 0.003964 * d) % 360 + 360) % 360;
+      }
+    }
+
+    function calcAscendant(jd, latDeg, lonDeg) {
+      const lst = localSiderealTime(jd, lonDeg);
+      const eps = 23.4393 * DEG2RAD;
+      const lat = latDeg * DEG2RAD;
+      const lstRad = lst * DEG2RAD;
+
+      const tanAsc =
+        1 / (Math.cos(lstRad) * Math.tan(eps)) -
+        Math.tan(lat) * Math.sin(lstRad) / Math.cos(lstRad);
+
+      let asc = Math.atan(tanAsc) * RAD2DEG;
+
+      if (Math.sin(lstRad) > 0) asc += 180;
+      asc = ((asc % 360) + 360) % 360;
+
+      return asc;
+    }
+
+    function calcPlacidusHouses(jd, latDeg, lonDeg) {
+      const asc = calcAscendant(jd, latDeg, lonDeg);
+      const eps = 23.4393 * DEG2RAD;
+      const lstRad = localSiderealTime(jd, lonDeg) * DEG2RAD;
+      const mc = Math.atan(Math.tan(lstRad) / Math.cos(eps)) * RAD2DEG;
+
+      const houses = new Array(12).fill(0);
+      houses[0] = asc;
+      houses[9] = ((mc % 360) + 360) % 360;
+
+      for (let i = 1; i < 12; i++) {
+        if (i === 9) continue;
+        houses[i] = ((asc + i * 30) % 360 + 360) % 360;
+      }
+
+      return { asc, mc: houses[9], houses };
+    }
+
+    function findHouseForDegree(deg, houses) {
+      const d = ((deg % 360) + 360) % 360;
+
+      for (let i = 0; i < 12; i++) {
+        const cusp = ((houses[i] % 360) + 360) % 360;
+        const next = ((houses[(i + 1) % 12] % 360) + 360) % 360;
+
+        if (cusp <= next) {
+          if (d >= cusp && d < next) return i + 1;
+        } else {
+          if (d >= cusp || d < next) return i + 1;
+        }
+      }
+      return 1;
+    }
+
+    function generateChartData(formData) {
+      const { name, dateStr, timeStr, location } = formData;
+
+      const tzId = location.timezoneId;
+      const utc = toUTCFromLocal(dateStr, timeStr, tzId);
+
+      const hourFraction =
+        (utc.hour + utc.minute / 60 + utc.second / 3600) / 24;
+
+      const jd = julianDate(
+        utc.year, utc.month, utc.day, hourFraction
+      );
+
+      const lat = location.lat;
+      const lon = location.lon;
+
+      const { asc, mc, houses } = calcPlacidusHouses(jd, lat, lon);
+
+      const planetsData = PLANETS.map(p => {
+        const lonEcl = approximatePlanetLongitude(jd, p.key);
+        const degInfo = formatDegree(lonEcl);
+        const house = findHouseForDegree(lonEcl, houses);
+
+        return {
+          key: p.key,
+          name: p.name,
+          lon: lonEcl,
+          sign: degInfo.sign,
+          degText: degInfo.text,
+          house
+        };
+      });
+
+      return {
+        name,
+        dateStr,
+        timeStr,
+        locationName: location.name,
+        tzId,
+        jd,
+        lat,
+        lon,
+        asc,
+        mc,
+        ascInfo: formatDegree(asc),
+        mcInfo: formatDegree(mc),
+        houses,
+        planetsData
+      };
+    }
+
+    function renderChartSVG(chart) {
+      const svg = document.getElementById("chart-svg");
+      svg.innerHTML = "";
+
+      const size = 400;
+      const cx = size / 2;
+      const cy = size / 2;
+      const outerR = 180;
+      const innerR = 140;
+
+      const circleOuter = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circleOuter.setAttribute("cx", cx);
+      circleOuter.setAttribute("cy", cy);
+      circleOuter.setAttribute("r", outerR);
+      circleOuter.setAttribute("fill", "none");
+      circleOuter.setAttribute("stroke", "rgba(201,168,106,0.6)");
+      circleOuter.setAttribute("stroke-width", "3");
+      svg.appendChild(circleOuter);
+
+      const circleInner = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circleInner.setAttribute("cx", cx);
+      circleInner.setAttribute("cy", cy);
+      circleInner.setAttribute("r", innerR);
+      circleInner.setAttribute("fill", "none");
+      circleInner.setAttribute("stroke", "rgba(139,105,142,0.5)");
+      circleInner.setAttribute("stroke-width", "2");
+      svg.appendChild(circleInner);
+
+      for (let i = 0; i < 12; i++) {
+        const angle = (i * 30 - 90) * DEG2RAD;
+        const x1 = cx + Math.cos(angle) * innerR;
+        const y1 = cy + Math.sin(angle) * innerR;
+        const x2 = cx + Math.cos(angle) * outerR;
+        const y2 = cy + Math.sin(angle) * outerR;
+
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+        line.setAttribute("stroke", "rgba(232,220,194,0.35)");
+        line.setAttribute("stroke-width", "1");
+        svg.appendChild(line);
+      }
+
+      chart.planetsData.forEach(p => {
+        const angle = (p.lon - 90) * DEG2RAD;
+        const r = (innerR + outerR) / 2;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+
+        const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        dot.setAttribute("cx", x);
+        dot.setAttribute("cy", y);
+        dot.setAttribute("r", 6);
+        dot.setAttribute("fill", "var(--dourado)");
+        dot.setAttribute("stroke", "#000");
+        dot.setAttribute("stroke-width", "1.5");
+        svg.appendChild(dot);
+
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", x + 10);
+        label.setAttribute("y", y + 4);
+        label.setAttribute("fill", "var(--bege)");
+        label.setAttribute("font-size", "11");
+        label.textContent = p.name[0];
+        svg.appendChild(label);
+      });
+    }
+
+    function renderTable(chart) {
+      const tbody = document.getElementById("table-body");
+      tbody.innerHTML = "";
+
+      chart.planetsData.forEach(p => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.sign}</td>
+          <td>${p.degText}</td>
+          <td>${p.house}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderSummary(chart) {
+      const summary = document.getElementById("summary-text");
+
+      summary.innerHTML = `
+        <p><strong>Ascendente:</strong> ${chart.ascInfo.text}</p>
+        <p><strong>Meio do Céu:</strong> ${chart.mcInfo.text}</p>
+        <p><strong>Latitude:</strong> ${chart.lat.toFixed(4)}°</p>
+        <p><strong>Longitude:</strong> ${chart.lon.toFixed(4)}°</p>
+        <p><strong>Fuso horário:</strong> ${chart.tzId}</p>
+      `;
+
+      const mono = document.getElementById("mono-block");
+      mono.textContent =
+        `Mapa Astral de ${chart.name}\n` +
+        `Data: ${chart.dateStr}\n` +
+        `Hora: ${chart.timeStr}\n` +
+        `Local: ${chart.locationName}\n` +
+        `Ascendente: ${chart.ascInfo.text}\n` +
+        `MC: ${chart.mcInfo.text}\n\n` +
+        chart.planetsData
+          .map(p => `${p.name}: ${p.degText} (Casa ${p.house})`)
+          .join("\n");
+    }
+
+    function showResult() {
+      const formView = document.getElementById("view-form");
+      const resultView = document.getElementById("view-result");
+
+      formView.classList.remove("view-visible");
+      formView.classList.add("view-hidden");
+
+      setTimeout(() => {
+        resultView.classList.remove("view-hidden");
+        resultView.classList.add("view-visible");
+      }, 350);
+    }
+
+    function showForm() {
+      const formView = document.getElementById("view-form");
+      const resultView = document.getElementById("view-result");
+
+      resultView.classList.remove("view-visible");
+      resultView.classList.add("view-hidden");
+
+      setTimeout(() => {
+        formView.classList.remove("view-hidden");
+        formView.classList.add("view-visible");
+      }, 350);
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await carregarCidades();
+      ativarAutocomplete();
 
       document.getElementById("astroForm").addEventListener("submit", function (e) {
         e.preventDefault();
@@ -265,6 +669,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const name = document.getElementById("name").value || "Sem nome";
         const dateStr = document.getElementById("birthDate").value;
         const timeStr = document.getElementById("birthTime").value;
+
+        if (!dateStr || !timeStr) {
+          alert("Preencha data e hora de nascimento.");
+          return;
+        }
 
         if (!selectedLocation) {
           alert("Selecione uma cidade válida.");
@@ -289,15 +698,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         showResult();
       });
 
-      /* -----------------------------------------
-         BOTÃO VOLTAR
-      ----------------------------------------- */
-
       document.getElementById("btn-back").addEventListener("click", showForm);
-
-      /* -----------------------------------------
-         COPIAR TEXTO
-      ----------------------------------------- */
 
       document.getElementById("btn-copy").addEventListener("click", () => {
         const text = document.getElementById("mono-block").textContent;
@@ -305,501 +706,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Texto copiado!");
       });
 
-      /* -----------------------------------------
-         PDF (PRINT)
-      ----------------------------------------- */
-
-document.getElementById("btn-pdf").addEventListener("click", () => {
-    window.print();
-});
-    </script>
-    
-<script>
-  
-let cidades = [];
-
-async function carregarCidades() {
-  const res = await fetch("cidades-brasil.json");
-  cidades = await res.json();
-}
-</script>
-<script>
-/* -----------------------------------------
-   AUTOCOMPLETE LOCAL
------------------------------------------ */
-
-function ativarAutocomplete() {
-  const inputCidade = document.getElementById("cidade");
-  const lista = document.getElementById("lista-cidades");
-
-  inputCidade.addEventListener("input", () => {
-    const termo = inputCidade.value.toLowerCase();
-    lista.innerHTML = "";
-
-    if (termo.length < 2) {
-      lista.style.display = "none";
-      return;
-    }
-
-    // Se por algum motivo o JSON ainda não carregou
-    if (cidades.length === 0) {
-      console.warn("Cidades ainda não carregadas");
-      return;
-    }
-
-    const filtradas = cidades
-      .filter(c => c.nome.toLowerCase().includes(termo))
-      .slice(0, 12);
-
-    filtradas.forEach(c => {
-      const item = document.createElement("div");
-      item.className = "autocomplete-item";
-      item.textContent = c.nome;
-
-item.addEventListener("mousedown", () => {
-    inputCidade.value = c.nome;
-    selectedLocation = {
-      name: c.nome,
-      lat: c.lat,
-      lon: c.lon,
-      timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
-    lista.style.display = "none";
-});
-
-      lista.appendChild(item);
+      document.getElementById("btn-pdf").addEventListener("click", () => {
+        window.print();
+      });
     });
-
-    lista.style.display = filtradas.length ? "block" : "none";
-  });
-}
-
-      /* -----------------------------------------
-         HELPERS
-      ----------------------------------------- */
-
-      function pad2(n) {
-        return n < 10 ? "0" + n : "" + n;
-      }
-
-      function formatDegree(deg) {
-        let d = ((deg % 360) + 360) % 360;
-        const signIndex = Math.floor(d / 30);
-        const sign = ZODIAC_SIGNS[signIndex];
-        const degInSign = d - signIndex * 30;
-        const whole = Math.floor(degInSign);
-        const minutes = Math.round((degInSign - whole) * 60);
-        return {
-          sign,
-          text: `${pad2(whole)}°${pad2(minutes)}' ${sign}`
-        };
-      }
-
-      /* -----------------------------------------
-         TIMEZONE (LUXON)
-      ----------------------------------------- */
-
-      const DateTime = luxon.DateTime;
-
-      function toUTCFromLocal(dateStr, timeStr, timezoneId) {
-        const [year, month, day] = dateStr.split("-").map(Number);
-        const [hour, minute] = timeStr.split(":").map(Number);
-
-        const dt = DateTime.fromObject(
-          { year, month, day, hour, minute },
-          { zone: timezoneId }
-        );
-
-        const utc = dt.toUTC();
-
-        return {
-          year: utc.year,
-          month: utc.month,
-          day: utc.day,
-          hour: utc.hour,
-          minute: utc.minute,
-          second: utc.second
-        };
-      }
-
-      /* -----------------------------------------
-         ASTRONOMIA — JULIAN DATE
-      ----------------------------------------- */
-
-      function julianDate(y, m, d, hourFraction) {
-        if (m <= 2) {
-          y -= 1;
-          m += 12;
-        }
-        const A = Math.floor(y / 100);
-        const B = 2 - A + Math.floor(A / 5);
-        return Math.floor(365.25 * (y + 4716))
-          + Math.floor(30.6001 * (m + 1))
-          + d + B - 1524.5 + hourFraction;
-      }
-
-      /* -----------------------------------------
-         TEMPO SIDERAL
-      ----------------------------------------- */
-
-      function calcGMST(jd) {
-        const T = (jd - 2451545.0) / 36525.0;
-        let GMST = 280.46061837
-          + 360.98564736629 * (jd - 2451545.0)
-          + 0.000387933 * T * T
-          - (T * T * T) / 38710000.0;
-        return ((GMST % 360) + 360) % 360;
-      }
-
-      function localSiderealTime(jd, lon) {
-        let lst = calcGMST(jd) + lon;
-        return ((lst % 360) + 360) % 360;
-      }
-
-      /* -----------------------------------------
-         POSIÇÕES PLANETÁRIAS (APROXIMADAS)
-      ----------------------------------------- */
-
-      function approximatePlanetLongitude(jd, planetKey) {
-        const d = jd - 2451545.0;
-        switch (planetKey) {
-          case "sun":     return ((280.460 + 0.9856474 * d) % 360 + 360) % 360;
-          case "moon":    return ((218.316 + 13.176396 * d) % 360 + 360) % 360;
-          case "mercury": return ((60.0   + 4.09233445 * d) % 360 + 360) % 360;
-          case "venus":   return ((90.0   + 1.60213034 * d) % 360 + 360) % 360;
-          case "mars":    return ((120.0  + 0.52402075 * d) % 360 + 360) % 360;
-          case "jupiter": return ((150.0  + 0.08308529 * d) % 360 + 360) % 360;
-          case "saturn":  return ((180.0  + 0.03344414 * d) % 360 + 360) % 360;
-          case "uranus":  return ((210.0  + 0.01172834 * d) % 360 + 360) % 360;
-          case "neptune": return ((240.0  + 0.00598103 * d) % 360 + 360) % 360;
-          case "pluto":   return ((270.0  + 0.003964 * d) % 360 + 360) % 360;
-        }
-      }
-
-      /* -----------------------------------------
-         ASCENDENTE E CASAS (APROXIMADO)
-      ----------------------------------------- */
-
-      function calcAscendant(jd, latDeg, lonDeg) {
-        const lst = localSiderealTime(jd, lonDeg);
-        const eps = 23.4393 * DEG2RAD;
-        const lat = latDeg * DEG2RAD;
-        const lstRad = lst * DEG2RAD;
-
-        const tanAsc =
-          1 / (Math.cos(lstRad) * Math.tan(eps)) -
-          Math.tan(lat) * Math.sin(lstRad) / Math.cos(lstRad);
-
-        let asc = Math.atan(tanAsc) * RAD2DEG;
-
-        if (Math.sin(lstRad) > 0) asc += 180;
-        asc = ((asc % 360) + 360) % 360;
-
-        return asc;
-      }
-
-      function calcPlacidusHouses(jd, latDeg, lonDeg) {
-        const asc = calcAscendant(jd, latDeg, lonDeg);
-        const eps = 23.4393 * DEG2RAD;
-const lstRad = localSiderealTime(jd, lonDeg) * DEG2RAD;
-const mc = Math.atan(Math.tan(lstRad) / Math.cos(eps)) * RAD2DEG;
-
-
-        const houses = new Array(12).fill(0);
-        houses[0] = asc;
-        houses[9] = mc;
-
-        for (let i = 1; i < 12; i++) {
-          if (i === 9) continue;
-          houses[i] = ((asc + i * 30) % 360 + 360) % 360;
-        }
-
-        return { asc, mc, houses };
-      }
-
-      function findHouseForDegree(deg, houses) {
-        const d = ((deg % 360) + 360) % 360;
-
-        for (let i = 0; i < 12; i++) {
-          const cusp = ((houses[i] % 360) + 360) % 360;
-          const next = ((houses[(i + 1) % 12] % 360) + 360) % 360;
-
-          if (cusp <= next) {
-            if (d >= cusp && d < next) return i + 1;
-          } else {
-            if (d >= cusp || d < next) return i + 1;
-          }
-        }
-        return 1;
-      }
-
-      /* -----------------------------------------
-         GERAÇÃO DO MAPA
-      ----------------------------------------- */
-
-      function generateChartData(formData) {
-        const { name, dateStr, timeStr, location } = formData;
-
-        const tzId = location.timezoneId;
-        const utc = toUTCFromLocal(dateStr, timeStr, tzId);
-
-        const hourFraction =
-          (utc.hour + utc.minute / 60 + utc.second / 3600) / 24;
-
-        const jd = julianDate(
-          utc.year, utc.month, utc.day, hourFraction
-        );
-
-        const lat = location.lat;
-        const lon = location.lon;
-
-        const { asc, mc, houses } = calcPlacidusHouses(jd, lat, lon);
-
-        const planetsData = PLANETS.map(p => {
-          const lonEcl = approximatePlanetLongitude(jd, p.key);
-          const degInfo = formatDegree(lonEcl);
-          const house = findHouseForDegree(lonEcl, houses);
-
-          return {
-            key: p.key,
-            name: p.name,
-            lon: lonEcl,
-            sign: degInfo.sign,
-            degText: degInfo.text,
-            house
-          };
-        });
-
-        return {
-          name,
-          dateStr,
-          timeStr,
-          locationName: location.name,
-          tzId,
-          jd,
-          lat,
-          lon,
-          asc,
-          mc,
-          ascInfo: formatDegree(asc),
-          mcInfo: formatDegree(mc),
-          houses,
-          planetsData
-        };
-      }
-    </script>
-    <!-- ==========================
-         PARTE 3 — RENDERIZAÇÃO E EVENTOS
-         ========================== -->
-
-    <script>
-      /* -----------------------------------------
-         RODA ZODIACAL (SVG)
-      ----------------------------------------- */
-
-      function renderChartSVG(chart) {
-        const svg = document.getElementById("chart-svg");
-        svg.innerHTML = "";
-
-        const size = 400;
-        const cx = size / 2;
-        const cy = size / 2;
-        const outerR = 180;
-        const innerR = 140;
-
-        // Círculo externo
-        const circleOuter = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circleOuter.setAttribute("cx", cx);
-        circleOuter.setAttribute("cy", cy);
-        circleOuter.setAttribute("r", outerR);
-        circleOuter.setAttribute("fill", "none");
-        circleOuter.setAttribute("stroke", "rgba(201,168,106,0.6)");
-        circleOuter.setAttribute("stroke-width", "3");
-        svg.appendChild(circleOuter);
-
-        // Círculo interno
-        const circleInner = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circleInner.setAttribute("cx", cx);
-        circleInner.setAttribute("cy", cy);
-        circleInner.setAttribute("r", innerR);
-        circleInner.setAttribute("fill", "none");
-        circleInner.setAttribute("stroke", "rgba(139,105,142,0.5)");
-        circleInner.setAttribute("stroke-width", "2");
-        svg.appendChild(circleInner);
-
-        // Divisões dos signos
-        for (let i = 0; i < 12; i++) {
-          const angle = (i * 30 - 90) * DEG2RAD;
-          const x1 = cx + Math.cos(angle) * innerR;
-          const y1 = cy + Math.sin(angle) * innerR;
-          const x2 = cx + Math.cos(angle) * outerR;
-          const y2 = cy + Math.sin(angle) * outerR;
-
-          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          line.setAttribute("x1", x1);
-          line.setAttribute("y1", y1);
-          line.setAttribute("x2", x2);
-          line.setAttribute("y2", y2);
-          line.setAttribute("stroke", "rgba(232,220,194,0.35)");
-          line.setAttribute("stroke-width", "1");
-          svg.appendChild(line);
-        }
-
-        // Planetas
-        chart.planetsData.forEach(p => {
-          const angle = (p.lon - 90) * DEG2RAD;
-          const r = (innerR + outerR) / 2;
-          const x = cx + Math.cos(angle) * r;
-          const y = cy + Math.sin(angle) * r;
-
-          const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-          dot.setAttribute("cx", x);
-          dot.setAttribute("cy", y);
-          dot.setAttribute("r", 6);
-          dot.setAttribute("fill", "var(--dourado)");
-          dot.setAttribute("stroke", "#000");
-          dot.setAttribute("stroke-width", "1.5");
-          svg.appendChild(dot);
-
-          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          label.setAttribute("x", x + 10);
-          label.setAttribute("y", y + 4);
-          label.setAttribute("fill", "var(--bege)");
-          label.setAttribute("font-size", "11");
-          label.textContent = p.name[0];
-          svg.appendChild(label);
-        });
-      }
-
-      /* -----------------------------------------
-         TABELA
-      ----------------------------------------- */
-
-      function renderTable(chart) {
-        const tbody = document.getElementById("table-body");
-        tbody.innerHTML = "";
-
-        chart.planetsData.forEach(p => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${p.name}</td>
-            <td>${p.sign}</td>
-            <td>${p.degText}</td>
-            <td>${p.house}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      /* -----------------------------------------
-         RESUMO TÉCNICO + TEXTO PARA COPIAR
-      ----------------------------------------- */
-
-      function renderSummary(chart) {
-        const summary = document.getElementById("summary-text");
-
-        summary.innerHTML = `
-          <p><strong>Ascendente:</strong> ${chart.ascInfo.text}</p>
-          <p><strong>Meio do Céu:</strong> ${chart.mcInfo.text}</p>
-          <p><strong>Latitude:</strong> ${chart.lat.toFixed(4)}°</p>
-          <p><strong>Longitude:</strong> ${chart.lon.toFixed(4)}°</p>
-          <p><strong>Fuso horário:</strong> ${chart.tzId}</p>
-        `;
-
-        const mono = document.getElementById("mono-block");
-        mono.textContent =
-          `Mapa Astral de ${chart.name}\n` +
-          `Data: ${chart.dateStr}\n` +
-          `Hora: ${chart.timeStr}\n` +
-          `Local: ${chart.locationName}\n` +
-          `Ascendente: ${chart.ascInfo.text}\n` +
-          `MC: ${chart.mcInfo.text}\n\n` +
-          chart.planetsData
-            .map(p => `${p.name}: ${p.degText} (Casa ${p.house})`)
-            .join("\n");
-      }
-
-      /* -----------------------------------------
-         TRANSIÇÕES ENTRE TELAS
-      ----------------------------------------- */
-
-      function showResult() {
-        const formView = document.getElementById("view-form");
-        const resultView = document.getElementById("view-result");
-
-        formView.classList.remove("view-visible");
-        formView.classList.add("view-hidden");
-
-        setTimeout(() => {
-          resultView.classList.remove("view-hidden");
-          resultView.classList.add("view-visible");
-        }, 350);
-      }
-
-      function showForm() {
-        const formView = document.getElementById("view-form");
-        const resultView = document.getElementById("view-result");
-
-        resultView.classList.remove("view-visible");
-        resultView.classList.add("view-hidden");
-
-        setTimeout(() => {
-          formView.classList.remove("view-hidden");
-          formView.classList.add("view-visible");
-        }, 350);
-      }
-    </script>
-              
-    <!-- ==========================
-         FIM DO SCRIPT
-         ========================== -->
-
-    <!-- VIEW: RESULTADO -->
-    <main id="view-result" class="view view-hidden" style="margin-top: 24px;">
-
-      <h2 id="result-title" style="font-family: 'Pirata One', cursive; font-size: 28px; margin-bottom: 6px;"></h2>
-      <div id="result-meta" style="opacity: 0.8; margin-bottom: 18px;"></div>
-
-      <!-- RODA ZODIACAL -->
-      <div style="display: flex; justify-content: center; margin-bottom: 24px;">
-        <svg id="chart-svg" width="400" height="400"></svg>
-      </div>
-
-      <!-- TABELA -->
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-        <thead>
-          <tr style="background: rgba(201,168,106,0.15);">
-            <th style="padding: 8px;">Planeta</th>
-            <th style="padding: 8px;">Signo</th>
-            <th style="padding: 8px;">Posição</th>
-            <th style="padding: 8px;">Casa</th>
-          </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
-
-      <!-- RESUMO -->
-      <div id="summary-text" style="margin-bottom: 24px; line-height: 1.6;"></div>
-
-      <!-- BLOCO MONO -->
-      <pre id="mono-block" style="
-        background: #111;
-        padding: 16px;
-        border-radius: 12px;
-        border: 1px solid rgba(201,168,106,0.3);
-        white-space: pre-wrap;
-        margin-bottom: 24px;
-      "></pre>
-
-      <!-- BOTÕES -->
-      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <button id="btn-back" class="btn-primary">Voltar</button>
-        <button id="btn-copy" class="btn-primary">Copiar texto</button>
-        <button id="btn-pdf" class="btn-primary">Salvar PDF</button>
-      </div>
-
-    </main>
-
-  </div> <!-- fecha .app-shell -->
+  </script>
 </body>
 </html>
