@@ -250,8 +250,10 @@ table tr:nth-child(even) {
    CARREGAR CIDADES DO BRASIL
 ----------------------------------------- */
 document.addEventListener("DOMContentLoaded", async () => {
-  await carregarCidades();  // Carrega o JSON
-  ativarAutocomplete();     // Ativa o autocomplete
+  await carregarCidades();
+  ativarAutocomplete();
+  
+});
   
         /* -----------------------------------------
          SUBMISSÃO DO FORMULÁRIO
@@ -307,17 +309,21 @@ document.addEventListener("DOMContentLoaded", async () => {
          PDF (PRINT)
       ----------------------------------------- */
 
-      document.getElementById("btn-pdf").addEventListener("click", () => {
-        window.print();
+document.getElementById("btn-pdf").addEventListener("click", () => {
+    window.print();
+});
     </script>
     
+<script>
+  
 let cidades = [];
 
 async function carregarCidades() {
   const res = await fetch("cidades-brasil.json");
   cidades = await res.json();
 }
-
+</script>
+<script>
 /* -----------------------------------------
    AUTOCOMPLETE LOCAL
 ----------------------------------------- */
@@ -350,16 +356,16 @@ function ativarAutocomplete() {
       item.className = "autocomplete-item";
       item.textContent = c.nome;
 
-      item.addEventListener("mousedown", () => {
-        inputCidade.value = c.nome;
-        selectedLocation = {
-          name: c.nome,
-          lat: c.lat,
-          lon: c.lon,
-          timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
-        lista.style.display = "none";
-      };
+item.addEventListener("mousedown", () => {
+    inputCidade.value = c.nome;
+    selectedLocation = {
+      name: c.nome,
+      lat: c.lat,
+      lon: c.lon,
+      timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+    lista.style.display = "none";
+});
 
       lista.appendChild(item);
     });
@@ -494,7 +500,10 @@ function ativarAutocomplete() {
 
       function calcPlacidusHouses(jd, latDeg, lonDeg) {
         const asc = calcAscendant(jd, latDeg, lonDeg);
-        const mc = localSiderealTime(jd, lonDeg);
+        const eps = 23.4393 * DEG2RAD;
+const lstRad = localSiderealTime(jd, lonDeg) * DEG2RAD;
+const mc = Math.atan(Math.tan(lstRad) / Math.cos(eps)) * RAD2DEG;
+
 
         const houses = new Array(12).fill(0);
         houses[0] = asc;
